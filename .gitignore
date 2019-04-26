@@ -1,0 +1,7 @@
+*/bin/
+*/obj/*
+API/wwwroot
+**/*.csproj
+**/*.json
+.idea/
+*.sln*
