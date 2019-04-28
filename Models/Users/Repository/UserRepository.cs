@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Client.Models.Users;
 using MongoDB.Driver;
 
 namespace Models.Users.Repository
@@ -25,10 +26,16 @@ namespace Models.Users.Repository
             return Task.FromResult(result);
         }
 
-        public Task<User> GetAsync(string login)
+        public Task<User> GetByIdAsync(string id)
         {
-            var search = users.Find(user => user.Login == login);
-            var result = search.FirstOrDefault();
+            var result = users.Find(user => user.Id == id).FirstOrDefault();
+            
+            return Task.FromResult(result);
+        }
+        
+        public Task<User> GetByLoginAsync(string login)
+        {
+            var result = users.Find(user => user.Login == login).FirstOrDefault();
 
             return Task.FromResult(result);
         }
@@ -52,7 +59,7 @@ namespace Models.Users.Repository
             var user = new User
             {
                 Login = creationInfo.Login,
-                PasswordHash = creationInfo.PasswodHash,
+                PasswordHash = creationInfo.PasswordHash,
                 RegisteredAt = DateTime.Now,
                 FirstName = creationInfo.FirstName,
                 LastName = creationInfo.LastName,
@@ -61,11 +68,51 @@ namespace Models.Users.Repository
                 LastUpdatedAt = DateTime.Now
             };
             
-            users.InsertOne(user);
+            users.InsertOne(user, cancellationToken: cancellationToken);
 
             return Task.FromResult(user);
         }
 
+        public Task<User> PatchAsync(UserPatchInfo patchInfo, string userId, CancellationToken cancellationToken)
+        {
+            if (patchInfo == null)
+            {
+                throw new ArgumentNullException(nameof(patchInfo));
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            var user = users.Find(item => item.Id == userId).FirstOrDefault();
+            
+            if (user is null)
+            {
+                throw new UserNotFoundException(userId);
+            }
+
+            if (patchInfo.Email != null)
+            {
+                user.Email = patchInfo.Email;
+            }
+
+            if (patchInfo.Phone != null)
+            {
+                user.Phone = patchInfo.Phone;
+            }
+
+            if (patchInfo.FirstName != null)
+            {
+                user.FirstName = patchInfo.FirstName;
+            }    
+            
+            if (patchInfo.LastName != null)
+            {
+                user.LastName = patchInfo.LastName;
+            }
+            users.ReplaceOne(usr => usr.Id == user.Id, user);
+            
+            return Task.FromResult(user);
+        }
+        
         public Task UpdateAsync(string id, User userIn)
         {
             users.ReplaceOne(user => user.Id == id, userIn);

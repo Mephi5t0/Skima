@@ -19,7 +19,7 @@ namespace Models.Users
         public UserCreationInfo(string login, string passwordHash, string firstName, string lastName, string email, string phone)
         {
             this.Login = login ?? throw new ArgumentNullException(nameof(login));
-            this.PasswodHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
+            this.PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
             this.FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
             this.LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
             this.Email = email ?? throw new ArgumentNullException(nameof(email));
@@ -34,7 +34,7 @@ namespace Models.Users
         /// <summary>
         /// Хэш пароля
         /// </summary>
-        public string PasswodHash { get; }
+        public string PasswordHash { get; }
         
         /// <summary>
         /// Имя пользователя

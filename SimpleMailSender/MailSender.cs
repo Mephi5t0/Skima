@@ -10,9 +10,7 @@ namespace SimpleMailSender
     public class MailSender
     {
         private static Dictionary<string, bool> notifiedUsers = new Dictionary<string, bool>();
-        
         private UserRepository userRepository;
-
 
         public MailSender(UserRepository userRepository)
         {
@@ -26,30 +24,16 @@ namespace SimpleMailSender
             {
                 if (!notifiedUsers.ContainsKey(user.Id))
                 {
-                    notifiedUsers.Add(user.Id,false);
+                    notifiedUsers.Add(user.Id, false);
                 }
 
                 if (!notifiedUsers[user.Id])
                 {
-                    //SendEmail(user.Email);
                     SendEmailAsync(user.Email).GetAwaiter();
                     notifiedUsers[user.Id] = true;
                     Console.WriteLine("Сообщение отправлено");
                 }
             }
-        }
-        
-        private static void SendEmail(string receiverAddress)
-        {
-            var from = new MailAddress("skima.mail4@gmail.com", "Skima");
-            var to = new MailAddress(receiverAddress);
-            var message = new MailMessage(from, to);
-            message.Subject = "Уведомление";
-            message.Body = "Пользователь успешно прошёл регистрацию";
-            var smtp = new SmtpClient("smtp.gmail.com", 587);
-            smtp.Credentials = new NetworkCredential("skima.mail4@gmail.com", "backendskima");
-            smtp.EnableSsl = true;
-            smtp.Send(message);
         }
         
         private static async Task SendEmailAsync(string receiverAddress)

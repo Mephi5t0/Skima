@@ -6,7 +6,7 @@ namespace API.Errors
 {
     public static class ServiceErrorResponses
     {
-        public static ServiceErrorResponse TodoNotFound(string activityId)
+        public static ServiceErrorResponse ActivityNotFound(string activityId)
         {
             if (activityId == null)
             {
@@ -90,8 +90,8 @@ namespace API.Errors
 
             return error;
         }
-        
-        public static ServiceErrorResponse UserIdIsNull()
+
+        public static ServiceErrorResponse InvalidRouteParameter(string target)
         {
             var error = new ServiceErrorResponse
             {
@@ -99,8 +99,56 @@ namespace API.Errors
                 Error = new ServiceError
                 {
                     Code = ServiceErrorCodes.BadRequest,
-                    Message = "User Id is null.",
-                    Target = "user"
+                    Message = "Route parameter is null or has inappropriate form.",
+                    Target = target
+                }
+            };
+
+            return error;
+        }
+        
+        public static ServiceErrorResponse InvalidQuery(string target)
+        {
+            var error = new ServiceErrorResponse
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Error = new ServiceError
+                {
+                    Code = ServiceErrorCodes.BadRequest,
+                    Message = "Request query parameters are invalid.",
+                    Target = target
+                }
+            };
+
+            return error;
+        }
+        
+        public static ServiceErrorResponse InvalidClaims(string target)
+        {
+            var error = new ServiceErrorResponse
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                Error = new ServiceError
+                {
+                    Code = ServiceErrorCodes.BadRequest,
+                    Message = "JWT has invalid claims",
+                    Target = target
+                }
+            };
+
+            return error;
+        }
+
+        public static ServiceErrorResponse NoSuchObject(string target, string message)
+        {
+            var error = new ServiceErrorResponse
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Error = new ServiceError
+                {
+                    Code = ServiceErrorCodes.NotFound,
+                    Message = message,
+                    Target = target
                 }
             };
 

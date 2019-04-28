@@ -37,37 +37,6 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Route("users")]
-        public async Task<IActionResult> Register([FromBody] Client.Users.UserRegistrationInfo registrationInfo,
-            CancellationToken cancellationToken)
-        {
-            if (registrationInfo == null)
-            {
-                var error = ServiceErrorResponses.BodyIsMissing("UserRegistrationInfo");
-                return this.BadRequest(error);
-            }
-
-            User result;
-            var creationInfo = new UserCreationInfo(registrationInfo.Login,
-                Authenticator.HashPassword(registrationInfo.Password), registrationInfo.FirstName,
-                registrationInfo.LastName, registrationInfo.Email, registrationInfo.Phone);
-
-            try
-            {
-                result = await userRepository.CreateAsync(creationInfo, cancellationToken);
-            }
-            catch (UserDuplicationException)
-            {
-                var error = ServiceErrorResponses.ConflictLogin(creationInfo?.Login);
-                return this.Conflict(error);
-            }
-
-            var clientUser = UserConverter.Convert(result);
-
-            return this.Ok(clientUser);
-        }
-
-        [HttpPost]
         [Route("auth/tokens")]
         public async Task<IActionResult> Token([FromBody] Client.Auth.TokenCreationInfo tokenCreationInfo,
             CancellationToken cancellationToken)
@@ -98,7 +67,7 @@ namespace API.Controllers
 
             await tokenRepository.RemoveRefreshTokenAsync(refreshToken);
 
-            return Ok();
+            return Ok("Refresh token removed successfully");
         }
 
         [HttpPatch]
@@ -110,7 +79,7 @@ namespace API.Controllers
             var savedRefreshToken = await tokenRepository.GetRefreshTokenAsync(userId);
             if (savedRefreshToken != refreshToken)
             {
-                throw new SecurityTokenException("Invalid refresh token");
+                return BadRequest("Invalid refresh token");
             }
 
             var newJwtToken = GenerateToken(principal.Claims);
@@ -120,12 +89,12 @@ namespace API.Controllers
 
             return new ObjectResult(new
             {
-                token = newJwtToken,
+                accessToken = newJwtToken,
                 refreshToken = newRefreshToken
             });
         }
 
-        private string GenerateToken(IEnumerable<Claim> claims)
+        private static string GenerateToken(IEnumerable<Claim> claims)
         {
             var jwt = new JwtSecurityToken(AuthOptions.ISSUER,
                 AuthOptions.AUDIENCE,

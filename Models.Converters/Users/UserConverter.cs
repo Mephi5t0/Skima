@@ -30,5 +30,26 @@ namespace Models.Converters.Users
 
             return clientUser;
         }
+
+        public static Client.UserInfo ConvertToUserInfo(global::Models.Users.User modelUser)
+        {
+            if (modelUser == null)
+            {
+                throw new ArgumentNullException(nameof(modelUser));
+            }
+            
+            var clientUserInfo = new Client.UserInfo
+            {
+                Id = modelUser.Id,
+                Login = modelUser.Login,
+                Email = modelUser.Email,
+                Phone = modelUser.Phone,
+                FirstName = modelUser.FirstName,
+                LastName = modelUser.LastName,
+                RegisteredAt = modelUser.RegisteredAt
+            };
+
+            return clientUserInfo;
+        }
     }
 }

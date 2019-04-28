@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Models;
+using Models.Activity.Repository;
+using Models.Maraphone.Repository;
 using Models.Tokens.Repository;
 using Models.Users.Repository;
 using SimpleMailSender;
@@ -32,6 +34,8 @@ namespace API
             services.AddSingleton<IAuthenticator, Authenticator>();
             services.AddSingleton<UserRepository>();
             services.AddSingleton<TokenRepository>();
+            services.AddSingleton<MaraphoneRepository>();
+            services.AddSingleton<ActivityRepository>();
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
 //            services.AddHostedService<CronWorker>();

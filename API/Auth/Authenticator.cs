@@ -33,7 +33,7 @@ namespace API.Auth
 
             if (identity == null)
             {
-                throw new UnauthorizedAccessException();
+                throw new ArgumentNullException(nameof(identity));
             }
 
             var now = DateTime.UtcNow;
@@ -64,7 +64,7 @@ namespace API.Auth
         private async Task<IReadOnlyCollection<Claim>> GetIdentity(string login, string password)
         {
             List<Claim> claims = null;
-            var user = await userRepository.GetAsync(login);
+            var user = await userRepository.GetByLoginAsync(login);
 
             if (user != null)
             {
@@ -73,7 +73,7 @@ namespace API.Auth
                 {
                     claims = new List<Claim>
                     {
-                        new Claim("Id", user.Id)
+                        new Claim("userId", user.Id)
                     };
                 }
             }
