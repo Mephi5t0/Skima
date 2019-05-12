@@ -19,25 +19,22 @@ namespace API.Controllers
 {
     using Client = global::Client.Models;
 
-    [Route("v1")]
+    [Route("v1/auth/tokens")]
     [AllowAnonymous]
     public class AuthenticationController : Controller
     {
-        private readonly UserRepository userRepository;
         private readonly TokenRepository tokenRepository;
 
         private readonly IAuthenticator authenticator;
 
-        public AuthenticationController(UserRepository userRepository, TokenRepository tokenRepository,
+        public AuthenticationController(TokenRepository tokenRepository,
             IAuthenticator authenticator)
         {
-            this.userRepository = userRepository;
             this.tokenRepository = tokenRepository;
             this.authenticator = authenticator;
         }
 
         [HttpPost]
-        [Route("auth/tokens")]
         public async Task<IActionResult> Token([FromBody] Client.Auth.TokenCreationInfo tokenCreationInfo,
             CancellationToken cancellationToken)
         {
@@ -56,7 +53,6 @@ namespace API.Controllers
         }
         
         [HttpDelete]
-        [Route("auth/tokens")]
         public async Task<IActionResult> Token([FromQuery] string refreshToken,
             CancellationToken cancellationToken)
         {
@@ -71,7 +67,6 @@ namespace API.Controllers
         }
 
         [HttpPatch]
-        [Route("auth/tokens")]
         public async Task<IActionResult> Refresh([FromHeader] string token, [FromHeader] string refreshToken)
         {
             var principal = authenticator.GetPrincipalFromExpiredToken(token);

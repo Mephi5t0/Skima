@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using Models.Tokens.Repository;
 using Models.Users;
 using Models.Users.Repository;
 
@@ -16,15 +17,12 @@ namespace API.Auth
     public class Authenticator : IAuthenticator
     {
         private readonly UserRepository userRepository;
+        private readonly TokenRepository tokenRepository;
 
-        public Authenticator(UserRepository userRepository)
+        public Authenticator(UserRepository userRepository, TokenRepository tokenRepository)
         {
-            if (userRepository == null)
-            {
-                throw new ArgumentNullException(nameof(userRepository));
-            }
-
-            this.userRepository = userRepository;
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.tokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
         }
 
         public async Task<string> AuthenticateAsync(string login, string password, CancellationToken cancellationToken)
@@ -64,7 +62,8 @@ namespace API.Auth
         private async Task<IReadOnlyCollection<Claim>> GetIdentity(string login, string password)
         {
             List<Claim> claims = null;
-            var user = await userRepository.GetByLoginAsync(login);
+            var user = await userRepository.GetByEMailAsync(login);
+            var refreshToken = GenerateRefreshToken();
 
             if (user != null)
             {
@@ -73,9 +72,12 @@ namespace API.Auth
                 {
                     claims = new List<Claim>
                     {
-                        new Claim("userId", user.Id)
+                        new Claim("userId", user.Id),
+                        new Claim("RefreshToken", refreshToken)
                     };
                 }
+
+                await tokenRepository.SaveRefreshTokenAsync(user.Id, refreshToken);
             }
 
             return claims;

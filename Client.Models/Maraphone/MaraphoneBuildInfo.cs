@@ -3,18 +3,8 @@ using System.Runtime.Serialization;
 
 namespace Client.Models.Maraphone
 {
-    public class MaraphoneCreationInfo
+    public class MaraphoneBuildInfo
     {
-        /// <summary>
-        /// Идентификатор марафона
-        /// </summary>
-        public string Id { get; set; }
-        
-        /// <summary>
-        /// Id создателя марафона
-        /// </summary> 
-        public string CreatedBy { get; set; }
-        
         /// <summary>
         /// Название марафона
         /// </summary>
@@ -31,7 +21,7 @@ namespace Client.Models.Maraphone
         /// Спринты марафона
         /// </summary>
         [DataMember(IsRequired = true)]
-        public Sprint[] Sprints { get; set; }
+        public SprintBuildInfo[] SprintsBuildInfo { get; set; }
         
         /// <summary>
         /// Продолжительность марафона

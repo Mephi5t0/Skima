@@ -11,7 +11,7 @@ namespace Client.Models.Users
         /// <summary>
         /// Логин пользователя
         /// </summary>
-        [DataMember(IsRequired = true)]
+        [DataMember(IsRequired = false)]
         public string Login { get; set; }
 
         /// <summary>
@@ -23,13 +23,13 @@ namespace Client.Models.Users
         /// <summary>
         /// Имя пользователя
         /// </summary>
-        [DataMember(IsRequired = true)]
+        [DataMember(IsRequired = false)]
         public string FirstName { get; set; }
         
         /// <summary>
         /// Фамилия пользователя
         /// </summary>
-        [DataMember(IsRequired = true)]
+        [DataMember(IsRequired = false)]
         public string LastName { get; set; }
         
         /// <summary>
@@ -41,7 +41,7 @@ namespace Client.Models.Users
         /// <summary>
         /// Телефон пользователя
         /// </summary>
-        [DataMember(IsRequired = true)]
+        [DataMember(IsRequired = false)]
         public string Phone { get; set; }
     }
 }

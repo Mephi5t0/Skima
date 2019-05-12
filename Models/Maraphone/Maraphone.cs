@@ -16,7 +16,7 @@ namespace Models.Maraphone
         /// <summary>
         /// Название марафона
         /// </summary>
-        [BsonElement("TagTitles")]
+        [BsonElement("Title")]
         public string Title { get; set; }
 
         /// <summary>
@@ -35,21 +35,19 @@ namespace Models.Maraphone
         /// Id создателя марафона
         /// </summary> 
         [BsonElement("CreatedBy")]
-        [BsonTimeSpanOptions(BsonType.String)]
         public string CreatedBy { get; set; }
         
         /// <summary>
         /// Дата создания марафона
         /// </summary> 
         [BsonElement("CreatedAt")]
-        [BsonTimeSpanOptions(BsonType.String)]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreatedAt { get; set; }
         
         /// <summary>
         /// Продолжительность марафона
         /// </summary> 
         [BsonElement("Duration")]
-        [BsonTimeSpanOptions(BsonType.String)]
         public TimeSpan Duration { get; set; }
     }
 }

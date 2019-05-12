@@ -2,14 +2,8 @@ using System.Runtime.Serialization;
 
 namespace Client.Models.Entry
 {
-    public class EntryCreationInfo
+    public class EntryBuildInfo
     {    
-        /// <summary>
-        /// Идентификатор пользователя
-        /// </summary>
-        [DataMember(IsRequired = true)]
-        public string UserId { get; set; }
-
         /// <summary>
         /// Идентификатор активности
         /// </summary>

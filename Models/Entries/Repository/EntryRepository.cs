@@ -16,28 +16,28 @@ namespace Models.Entries.Repository
             entries = database.GetCollection<Entry>("Entries");
         }
         
-        public Task<Entry> CreateAsync(Entry entryInfo, CancellationToken cancellationToken)
+        public Task<Entry> CreateAsync(EntryCreationInfo entryCreationInfo, CancellationToken cancellationToken)
         {
-            if (entryInfo == null)
+            if (entryCreationInfo == null)
             {
-                throw new ArgumentNullException(nameof(entryInfo));
+                throw new ArgumentNullException(nameof(entryCreationInfo));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var countSameEntries = entries.Find(ent => ent.UserId == entryInfo.UserId && ent.ActivityId == entryInfo.ActivityId).CountDocuments();
+            var countSameEntries = entries.Find(ent => ent.UserId == entryCreationInfo.UserId && ent.ActivityId == entryCreationInfo.ActivityId).CountDocuments();
 
             if (countSameEntries > 0)
             {
-                throw new EntryDuplicationException(entryInfo.UserId, entryInfo.ActivityId);
+                throw new EntryDuplicationException(entryCreationInfo.UserId, entryCreationInfo.ActivityId);
             }
 
             var entry = new Entry
             {
-                Status = entryInfo.Status,
-                UserId = entryInfo.UserId,
+                Status = entryCreationInfo.Status,
+                UserId = entryCreationInfo.UserId,
                 CreatedAt = DateTime.Now,
-                ActivityId = entryInfo.ActivityId
+                ActivityId = entryCreationInfo.ActivityId
             };
             
             entries.InsertOne(entry, cancellationToken: cancellationToken);

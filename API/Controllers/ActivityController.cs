@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 using API.Errors;
 using Client.Models.Activity;
 using Microsoft.AspNetCore.Mvc;
+using Models.Activity;
 using Models.Activity.Repository;
 using Models.Converters.Activities;
+using Models.Converters.Entry;
 using Models.Maraphone.Repository;
 using Models.Users.Repository;
+using StatusConverter = Models.Converters.Activities.StatusConverter;
 
 namespace API.Controllers
 {
@@ -30,17 +33,24 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] Client.ActivityCreationInfo creationInfo,
+        public async Task<IActionResult> CreateAsync([FromBody] Client.ActivityBuildInfo buildInfo,
             CancellationToken cancellationToken)
         {
-            if (creationInfo == null)
+            if (buildInfo == null)
             {
                 var error = ServiceErrorResponses.BodyIsMissing("ActivityCreationInfo");
                 return this.BadRequest(error);
             }
-
             var userId = User.FindFirstValue("userId");
-            var maraphoneId = creationInfo.MaraphoneId;
+            
+            if (userId == null)
+            {
+                var error = ServiceErrorResponses.InvalidClaims("userId");
+                return this.BadRequest(error);
+            }
+            
+            
+            var maraphoneId = buildInfo.MaraphoneId;
             var maraphone = await maraphoneRepository.GetAsync(maraphoneId, cancellationToken);
             if (maraphone == null)
             {
@@ -49,9 +59,12 @@ namespace API.Controllers
             }
             
             var duration = maraphone.Duration;
-            var endAt = creationInfo.StartAt + duration;
+            var endAt = buildInfo.StartAt + duration;
+            var activityStatus = StatusConverter.Convert(buildInfo.Status);
+            var activityCreationInfo = new ActivityCreationInfo(buildInfo.MaraphoneId, buildInfo.Tags,
+                userId, buildInfo.Experts, activityStatus, buildInfo.StartAt, endAt);
 
-            var modelActivity = await activityRepository.CreateAsync(creationInfo, userId, endAt, cancellationToken);
+            var modelActivity = await activityRepository.CreateAsync(activityCreationInfo, endAt, cancellationToken);
             var clientActivity = ActivityConverter.Convert(modelActivity);
             
             return CreatedAtRoute("GetActivity", clientActivity);

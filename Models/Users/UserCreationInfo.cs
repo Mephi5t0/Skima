@@ -18,12 +18,12 @@ namespace Models.Users
         /// <param name="phone">Номер телефона пользователя</param>
         public UserCreationInfo(string login, string passwordHash, string firstName, string lastName, string email, string phone)
         {
-            this.Login = login ?? throw new ArgumentNullException(nameof(login));
+            this.Login = login;
             this.PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
-            this.FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
-            this.LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
+            this.FirstName = firstName;
+            this.LastName = lastName;
             this.Email = email ?? throw new ArgumentNullException(nameof(email));
-            this.Phone = phone ?? throw new ArgumentNullException(nameof(phone));
+            this.Phone = phone;
         }
         
         /// <summary>

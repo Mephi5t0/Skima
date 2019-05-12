@@ -4,4 +4,3 @@ API/wwwroot
 **/*.csproj
 **/*.json
 .idea/
-*.sln*

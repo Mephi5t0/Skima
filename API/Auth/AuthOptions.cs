@@ -7,7 +7,7 @@ namespace API.Auth
     {
         public const string ISSUER = "Skima";
         public const string AUDIENCE = "https://www.skima.cf:5061/";
-        public const int LIFETIME = 10;
+        public const int LIFETIME = 30;
         
         const string KEY = "Qsd2a!faT#Q@RQRS14fw@Fas@v!^FA@rAS21[QSXZhr@qfe";
 

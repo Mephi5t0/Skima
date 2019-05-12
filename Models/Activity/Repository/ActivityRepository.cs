@@ -90,11 +90,11 @@ namespace Models.Activity.Repository
             return Task.FromResult(result);
         }
         
-        public Task<Activity> CreateAsync(ActivityCreationInfo creationInfo, string userId, DateTime endAt, CancellationToken cancellationToken)
+        public Task<Activity> CreateAsync(ActivityCreationInfo activityCreationInfo, DateTime endAt, CancellationToken cancellationToken)
         {
-            if (creationInfo == null)
+            if (activityCreationInfo == null)
             {
-                throw new ArgumentNullException(nameof(creationInfo));
+                throw new ArgumentNullException(nameof(activityCreationInfo));
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -103,11 +103,11 @@ namespace Models.Activity.Repository
             {
                 Status = Status.New,
                 CreatedAt = DateTime.Now,
-                Tags = creationInfo.Tags,
-                Experts = creationInfo.Experts,
-                StartAt = creationInfo.StartAt,
-                MaraphoneId = creationInfo.MaraphoneId,
-                CreatedBy = userId,
+                Tags = activityCreationInfo.Tags,
+                Experts = activityCreationInfo.Experts,
+                StartAt = activityCreationInfo.StartAt,
+                MaraphoneId = activityCreationInfo.MaraphoneId,
+                CreatedBy = activityCreationInfo.CreatedBy,
                 EndAt = endAt
             };
             

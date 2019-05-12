@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Auth;
 using API.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Users;
 using Models.Users;
@@ -12,7 +13,7 @@ namespace API.Controllers
 {
     using Client = global::Client.Models;
     
-    [Route("v1")]
+    [Route("v1/users")]
     public class UserController : Controller
     {
         private readonly UserRepository userRepository;
@@ -22,8 +23,8 @@ namespace API.Controllers
             this.userRepository = userRepository;
         }
         
+        [AllowAnonymous]
         [HttpPost]
-        [Route("users")]
         public async Task<IActionResult> Register([FromBody] Client.Users.UserRegistrationInfo registrationInfo,
             CancellationToken cancellationToken)
         {
@@ -44,7 +45,7 @@ namespace API.Controllers
             }
             catch (UserDuplicationException)
             {
-                var error = ServiceErrorResponses.ConflictLogin(creationInfo?.Login);
+                var error = ServiceErrorResponses.ConflictLogin(creationInfo.Email);
                 return this.Conflict(error);
             }
 
@@ -54,7 +55,6 @@ namespace API.Controllers
         }
 
         [HttpGet(Name = "GetUser")]
-        [Route("users")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)
@@ -76,7 +76,6 @@ namespace API.Controllers
         }
 
         [HttpPatch]
-        [Route("users")]
         public async Task<IActionResult> UpdateAsync([FromBody] Client.Users.UserPatchInfo patchInfo, CancellationToken cancellationToken)
         {
             if (patchInfo == null)
@@ -111,7 +110,6 @@ namespace API.Controllers
         }
         
         [HttpDelete]
-        [Route("users")]
         public async Task<IActionResult> DeleteAsync()
         {
             var userId = User.FindFirstValue("userId");

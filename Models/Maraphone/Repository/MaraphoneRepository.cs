@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Client.Models.Maraphone;
 using MongoDB.Driver;
 
 namespace Models.Maraphone.Repository
@@ -28,17 +27,17 @@ namespace Models.Maraphone.Repository
 
             var maraphone = new Maraphone
             {
-                CreatedAt = DateTime.Now,
-                CreatedBy = creationInfo.CreatedBy,
                 Title = creationInfo.Title,
                 Sprints = creationInfo.Sprints,
                 Duration = creationInfo.Duration,
-                Description = creationInfo.Description
+                Description = creationInfo.Description,
+                CreatedAt = DateTime.Now,
+                CreatedBy = creationInfo.CreatedBy
             };
 
             maraphones.InsertOne(maraphone, cancellationToken: cancellationToken);
 
-            return Task.FromResult(maraphone);
+            return System.Threading.Tasks.Task.FromResult(maraphone);
         }
 
         public Task<Maraphone> GetAsync(string id, CancellationToken cancellationToken)
@@ -52,7 +51,7 @@ namespace Models.Maraphone.Repository
 
             var result = maraphones.Find(maraphone => maraphone.Id == id).FirstOrDefault();
 
-            return Task.FromResult(result);
+            return System.Threading.Tasks.Task.FromResult(result);
         }
     }
 }

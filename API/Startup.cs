@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Models;
 using Models.Activity.Repository;
 using Models.Maraphone.Repository;
+using Models.Maraphone.Task.Repository;
 using Models.Tokens.Repository;
 using Models.Users.Repository;
 using SimpleMailSender;
@@ -36,6 +37,7 @@ namespace API
             services.AddSingleton<TokenRepository>();
             services.AddSingleton<MaraphoneRepository>();
             services.AddSingleton<ActivityRepository>();
+            services.AddSingleton<ContentRepository>();
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
 //            services.AddHostedService<CronWorker>();

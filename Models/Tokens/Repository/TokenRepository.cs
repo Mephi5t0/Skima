@@ -29,7 +29,8 @@ namespace Models.Tokens.Repository
             var token = new Token
             {
                 UserId = userId,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                CreatedAt = DateTime.Now
             };
             tokens.InsertOne(token);
 

@@ -1,8 +1,8 @@
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
 using Microsoft.AspNetCore.Mvc;
-using Models.Converters.Activities;
 using Models.Converters.Maraphone;
 using Models.Maraphone;
 using Models.Maraphone.Repository;
@@ -11,6 +11,7 @@ namespace API.Controllers
 {
     using Client = global::Client.Models;
     
+    [Route("v1/maraphones")]
     public class MaraphoneController : Controller
     {
         private readonly MaraphoneRepository maraphoneRepository;
@@ -37,23 +38,32 @@ namespace API.Controllers
                 var error = ServiceErrorResponses.NoSuchObject("Maraphone", message);
                 return this.NotFound(error);
             }
-            var clientMaraphone = MaraphoneConverter.ConvertToClientModel(modelMaraphone);
+            var clientMaraphone = MaraphoneConverter.Convert(modelMaraphone);
 
             return Ok(clientMaraphone);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] Client.Maraphone.MaraphoneCreationInfo creationInfo,
+        public async Task<IActionResult> CreateAsync([FromBody] Client.Maraphone.MaraphoneBuildInfo buildInfo,
             CancellationToken cancellationToken)
         {
-            if (creationInfo == null)
+            if (buildInfo == null)
             {
                 var error = ServiceErrorResponses.InvalidRouteParameter("maraphoneId");
                 return this.BadRequest(error);
             }
+            var userId = User.FindFirstValue("userId");
+            
+            if (userId == null)
+            {
+                var error = ServiceErrorResponses.InvalidClaims("userId");
+                return this.BadRequest(error);
+            }
 
-            var modelMaraphone = await maraphoneRepository.CreateAsync(creationInfo, cancellationToken);
-            var clientMaraphone = MaraphoneConverter.ConvertToClientModel(modelMaraphone);
+            var maraphoneCreationInfo = new MaraphoneCreationInfo(buildInfo, userId);
+            
+            var modelMaraphone = await maraphoneRepository.CreateAsync(maraphoneCreationInfo, cancellationToken);
+            var clientMaraphone = MaraphoneConverter.Convert(modelMaraphone);
 
             return CreatedAtRoute("GetMaraphone", clientMaraphone);
         }

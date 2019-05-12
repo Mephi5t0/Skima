@@ -33,9 +33,9 @@ namespace Models.Users.Repository
             return Task.FromResult(result);
         }
         
-        public Task<User> GetByLoginAsync(string login)
+        public Task<User> GetByEMailAsync(string email)
         {
-            var result = users.Find(user => user.Login == login).FirstOrDefault();
+            var result = users.Find(user => user.Email == email).FirstOrDefault();
 
             return Task.FromResult(result);
         }
@@ -49,11 +49,11 @@ namespace Models.Users.Repository
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var countUsersWithSameLogin = users.Find(usr => usr.Login == creationInfo.Login).CountDocuments();
+            var countUsersWithSameLogin = users.Find(usr => usr.Email == creationInfo.Email).CountDocuments();
 
             if (countUsersWithSameLogin > 0)
             {
-                throw new UserDuplicationException(creationInfo.Login);
+                throw new UserDuplicationException(creationInfo.Email);
             }
 
             var user = new User
