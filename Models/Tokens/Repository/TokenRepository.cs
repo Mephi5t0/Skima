@@ -58,5 +58,20 @@ namespace Models.Tokens.Repository
 
             return Task.CompletedTask;
         }
+        
+        public Task DeleteExpiredTokes()
+        {
+            var allTokens = tokens.Find(token => true).ToList();
+
+            foreach (var token in allTokens)
+            {
+                if ((DateTime.Now - token.CreatedAt).TotalDays >= Token.LIFE_TIME)
+                {
+                    tokens.DeleteOne(t => t.RefreshToken == token.RefreshToken);
+                }
+            }
+            
+            return Task.CompletedTask;
+        }
     }
 }

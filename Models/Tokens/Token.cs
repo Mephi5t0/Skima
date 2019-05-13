@@ -24,5 +24,7 @@ namespace Models.Tokens
         [BsonElement("CreatedAt")]
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreatedAt { get; set; }
+        
+        public static int LIFE_TIME = 60;
     }
 }

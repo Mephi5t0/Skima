@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -48,6 +49,13 @@ namespace Models.Entries.Repository
         public Task<Entry> GetAsync(string id)
         {
             var result = entries.Find(entry => entry.Id == id).FirstOrDefault();
+            
+            return Task.FromResult(result);
+        }
+        
+        public Task<List<Entry>> GetAllAsync()
+        {
+            var result = entries.Find(x => true).ToList();
             
             return Task.FromResult(result);
         }

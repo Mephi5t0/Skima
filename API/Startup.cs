@@ -42,7 +42,7 @@ namespace API
             services.AddSingleton<EntryRepository>();
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
-//            services.AddHostedService<CronWorker>();
+//            services.AddHostedService<AuthDaemon>();
 
             services.AddCors();
 
