@@ -14,6 +14,7 @@ namespace API.Controllers
     using Client = global::Client.Models;
     
     [Route("v1/users")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserRepository userRepository;
@@ -35,8 +36,7 @@ namespace API.Controllers
             }
 
             User result;
-            var creationInfo = new UserCreationInfo(registrationInfo.Login,
-                Authenticator.HashPassword(registrationInfo.Password), registrationInfo.FirstName,
+            var creationInfo = new UserCreationInfo(Authenticator.HashPassword(registrationInfo.Password), registrationInfo.FirstName,
                 registrationInfo.LastName, registrationInfo.Email, registrationInfo.Phone);
 
             try

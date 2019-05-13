@@ -37,7 +37,7 @@ namespace Models.Tokens.Repository
             return Task.CompletedTask;
         }
 
-        public Task<String> GetRefreshTokenAsync(string userId)
+        public Task<string> GetRefreshTokenAsync(string userId)
         {
             var search = tokens.Find(token => token.UserId == userId);
             var result = search.FirstOrDefault();

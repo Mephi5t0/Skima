@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Maraphone;
 using Models.Maraphone.Task;
@@ -12,6 +13,7 @@ namespace API.Controllers
     using Client = global::Client.Models;
     
     [Route("v1/content")]
+    [Authorize]
     public class ContentController : Controller
     {
         private readonly ContentRepository contentRepository;

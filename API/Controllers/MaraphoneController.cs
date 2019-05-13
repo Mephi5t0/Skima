@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Maraphone;
 using Models.Maraphone;
@@ -12,6 +13,7 @@ namespace API.Controllers
     using Client = global::Client.Models;
     
     [Route("v1/maraphones")]
+    [Authorize]
     public class MaraphoneController : Controller
     {
         private readonly MaraphoneRepository maraphoneRepository;

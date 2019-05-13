@@ -4,32 +4,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
 using Client.Models.Activity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Activity;
 using Models.Activity.Repository;
 using Models.Converters.Activities;
-using Models.Converters.Entry;
 using Models.Maraphone.Repository;
-using Models.Users.Repository;
-using StatusConverter = Models.Converters.Activities.StatusConverter;
 
 namespace API.Controllers
 {
     using Client = global::Client.Models.Activity;
     
     [Route("v1/activities")]
+    [Authorize]
     public class ActivityController : Controller
     {
         private readonly ActivityRepository activityRepository;
         private readonly MaraphoneRepository maraphoneRepository;
-        private readonly UserRepository userRepository;
 
 
-        public ActivityController(ActivityRepository activityRepository, MaraphoneRepository maraphoneRepository, UserRepository userRepository)
+        public ActivityController(ActivityRepository activityRepository, MaraphoneRepository maraphoneRepository)
         {
             this.activityRepository = activityRepository;
             this.maraphoneRepository = maraphoneRepository;
-            this.userRepository = userRepository;
         }
 
         [HttpPost]
@@ -60,9 +57,11 @@ namespace API.Controllers
             
             var duration = maraphone.Duration;
             var endAt = buildInfo.StartAt + duration;
-            var activityStatus = StatusConverter.Convert(buildInfo.Status);
+            
+//            var activityStatus = StatusConverter.Convert(buildInfo.Status);
+
             var activityCreationInfo = new ActivityCreationInfo(buildInfo.MaraphoneId, buildInfo.Tags,
-                userId, buildInfo.Experts, activityStatus, buildInfo.StartAt, endAt);
+                userId, buildInfo.Experts, buildInfo.StartAt, endAt);
 
             var modelActivity = await activityRepository.CreateAsync(activityCreationInfo, endAt, cancellationToken);
             var clientActivity = ActivityConverter.Convert(modelActivity);

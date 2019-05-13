@@ -25,9 +25,9 @@ namespace API.Auth
             this.tokenRepository = tokenRepository ?? throw new ArgumentNullException(nameof(tokenRepository));
         }
 
-        public async Task<string> AuthenticateAsync(string login, string password, CancellationToken cancellationToken)
+        public async Task<string> AuthenticateAsync(string email, string password, CancellationToken cancellationToken)
         {
-            var identity = await GetIdentity(login, password);
+            var identity = await GetIdentity(email, password);
 
             if (identity == null)
             {
@@ -59,10 +59,10 @@ namespace API.Auth
             }
         }
 
-        private async Task<IReadOnlyCollection<Claim>> GetIdentity(string login, string password)
+        private async Task<IReadOnlyCollection<Claim>> GetIdentity(string email, string password)
         {
             List<Claim> claims = null;
-            var user = await userRepository.GetByEMailAsync(login);
+            var user = await userRepository.GetByEMailAsync(email);
             var refreshToken = GenerateRefreshToken();
 
             if (user != null)
@@ -75,9 +75,9 @@ namespace API.Auth
                         new Claim("userId", user.Id),
                         new Claim("RefreshToken", refreshToken)
                     };
+                    
+                    await tokenRepository.SaveRefreshTokenAsync(user.Id, refreshToken);
                 }
-
-                await tokenRepository.SaveRefreshTokenAsync(user.Id, refreshToken);
             }
 
             return claims;

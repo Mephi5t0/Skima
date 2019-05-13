@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Models.Activity.Repository;
+using Models.Entries.Repository;
 using Models.Maraphone.Repository;
 using Models.Maraphone.Task.Repository;
 using Models.Tokens.Repository;
@@ -38,10 +39,13 @@ namespace API
             services.AddSingleton<MaraphoneRepository>();
             services.AddSingleton<ActivityRepository>();
             services.AddSingleton<ContentRepository>();
+            services.AddSingleton<EntryRepository>();
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
 //            services.AddHostedService<CronWorker>();
-            
+
+            services.AddCors();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -84,6 +88,8 @@ namespace API
                 app.UseHsts();
             }
 
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

@@ -78,7 +78,8 @@ namespace Models.Maraphone
                 Duration = sprintBuildInfo.Duration,
                 CreatedAt = DateTime.Now,
                 CreatedBy = userId,
-                Description = sprintBuildInfo.Description
+                Description = sprintBuildInfo.Description,
+                Title = sprintBuildInfo.Title
             };
 
             return modelSprint;

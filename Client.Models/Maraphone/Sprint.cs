@@ -15,6 +15,11 @@ namespace Client.Models.Maraphone
         public string CreatedBy { get; set; }
         
         /// <summary>
+        /// Название спринта
+        /// </summary>
+        public string Title { get; set; }
+        
+        /// <summary>
         /// Описание спринта
         /// </summary>
         public string Description { get; set; }

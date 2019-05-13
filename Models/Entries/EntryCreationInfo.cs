@@ -12,12 +12,11 @@ namespace Models.Entries
         /// </summary>
         /// <param name="userId">Идентификатор пользователя</param>
         /// <param name="activityId">Идентификатор активности</param>
-        /// <param name="status">Статус активности</param>
-        public EntryCreationInfo(string userId, string activityId, Status status)
+        public EntryCreationInfo(string userId, string activityId)
         {
             this.UserId = userId ?? throw new ArgumentNullException();
             this.ActivityId = activityId ?? throw new ArgumentNullException();
-            this.Status = status;
+            this.Status = Status.Active;
         }
         
         /// <summary>

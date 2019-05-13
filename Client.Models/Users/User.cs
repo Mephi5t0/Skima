@@ -15,7 +15,7 @@ namespace Client.Models.Users
         /// <summary>
         /// Логин пользователя
         /// </summary>
-        public string Login { get; set; }
+        public string Email { get; set; }
         
         /// <summary>
         /// Дата регистрации пользователя

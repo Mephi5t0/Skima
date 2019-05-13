@@ -32,7 +32,8 @@ namespace Models.Converters.Maraphone
                 Tasks = clientTasks,
                 Duration = modelSprint.Duration,
                 CreatedBy = modelSprint.CreatedBy,
-                Description = modelSprint.Description
+                Description = modelSprint.Description,
+                Title = modelSprint.Title
             };
 
             return clientSprint;

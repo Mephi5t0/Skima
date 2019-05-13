@@ -13,6 +13,12 @@ namespace Client.Models.Maraphone
         public int Number { get; set; }
         
         /// <summary>
+        /// Название спринта
+        /// </summary>
+        [DataMember(IsRequired = true)]
+        public string Title { get; set; }
+        
+        /// <summary>
         /// Описание спринта
         /// </summary>
         [DataMember(IsRequired = true)]

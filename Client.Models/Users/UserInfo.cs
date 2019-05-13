@@ -10,11 +10,6 @@ namespace Client.Models.Users
         public string Id { get; set; }
 
         /// <summary>
-        /// Логин пользователя
-        /// </summary>
-        public string Login { get; set; }
-
-        /// <summary>
         /// Имя пользователя
         /// </summary>
         public string FirstName { get; set; }

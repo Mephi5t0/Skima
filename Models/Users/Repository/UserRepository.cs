@@ -58,7 +58,6 @@ namespace Models.Users.Repository
 
             var user = new User
             {
-                Login = creationInfo.Login,
                 PasswordHash = creationInfo.PasswordHash,
                 RegisteredAt = DateTime.Now,
                 FirstName = creationInfo.FirstName,

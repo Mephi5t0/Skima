@@ -9,11 +9,5 @@ namespace Client.Models.Entry
         /// </summary>
         [DataMember(IsRequired = true)]
         public string ActivityId { get; set; }
-
-        /// <summary>
-        /// Статус активности
-        /// </summary>
-        [DataMember(IsRequired = true)]
-        public Status Status { get; set; }
     }
 }

@@ -13,6 +13,12 @@ namespace Models.Maraphone
         public int Number { get; set; }
         
         /// <summary>
+        /// Название спринта
+        /// </summary>
+        [BsonElement("Title")]
+        public string Title { get; set; }
+        
+        /// <summary>
         /// Описание спринта
         /// </summary>
         [BsonElement("Description")]

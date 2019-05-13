@@ -42,12 +42,13 @@ namespace API.Controllers
 
             try
             {
-                encodedJwt = await authenticator.AuthenticateAsync(tokenCreationInfo.Login, tokenCreationInfo.Password,
+                encodedJwt = await authenticator.AuthenticateAsync(tokenCreationInfo.Email, tokenCreationInfo.Password,
                     cancellationToken);
             }
             catch
             {
-                return BadRequest("Invalid login or password");}
+                return BadRequest("Invalid login or password");
+            }
 
             return Ok(encodedJwt);
         }

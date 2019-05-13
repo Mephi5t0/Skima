@@ -24,7 +24,7 @@ namespace Models.Converters.Users
             var clientUser = new Client.User
             {
                 Id = modelUser.Id,
-                Login = modelUser.Login,
+                Email = modelUser.Email,
                 RegisteredAt = modelUser.RegisteredAt
             };
 
@@ -41,7 +41,6 @@ namespace Models.Converters.Users
             var clientUserInfo = new Client.UserInfo
             {
                 Id = modelUser.Id,
-                Login = modelUser.Login,
                 Email = modelUser.Email,
                 Phone = modelUser.Phone,
                 FirstName = modelUser.FirstName,

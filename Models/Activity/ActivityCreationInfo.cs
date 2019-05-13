@@ -5,14 +5,13 @@ namespace Models.Activity
 {
     public class ActivityCreationInfo
     {
-        public ActivityCreationInfo(string maraphoneId, string[] tags, string createdBy, string[] experts,
-            Status status, DateTime startAt, DateTime endAt)
+        public ActivityCreationInfo(string maraphoneId, string[] tags, string createdBy, string[] experts, DateTime startAt, DateTime endAt)
         {
             this.MaraphoneId = maraphoneId ?? throw new ArgumentNullException();
-            this.Tags = tags ?? throw new ArgumentNullException();
+            this.Tags = tags;
             this.CreatedBy = createdBy ?? throw new ArgumentNullException();
-            this.Experts = experts ?? throw new ArgumentNullException();
-            this.Status = status;
+            this.Experts = experts;
+            this.Status = Status.Announced;
             this.StartAt = startAt;
             this.EndAt = endAt;
         }

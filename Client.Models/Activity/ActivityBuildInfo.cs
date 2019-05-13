@@ -15,17 +15,14 @@ namespace Client.Models.Activity
         /// <summary>
         /// Тэги
         /// </summary>
+        [DataMember(IsRequired = false)]
         public string[] Tags { get; set; }
 
         /// <summary>
         /// Идентификаторы экспертов
         /// </summary>
+        [DataMember(IsRequired = false)]
         public string[] Experts { get; set; }
-        
-        /// <summary>
-        /// Статус активности
-        /// </summary>
-        public Status Status { get; set; }
         
         /// <summary>
         /// Дата начала активности

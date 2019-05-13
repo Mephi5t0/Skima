@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Entry;
 using Models.Entries;
@@ -12,6 +13,7 @@ namespace API.Controllers
     using Client = global::Client.Models;
 
     [Route("v1/entries")]
+    [Authorize]
     public class EntryController : Controller
     {
         private readonly EntryRepository entryRepository;
@@ -38,8 +40,9 @@ namespace API.Controllers
                 return this.BadRequest(error);
             }
 
-            var entryStatus = StatusConverter.Convert(entryBuildInfo.Status);
-            var entryCreationInfo = new EntryCreationInfo(userId, entryBuildInfo.ActivityId, entryStatus);
+//            var entryStatus = StatusConverter.Convert(entryBuildInfo.Status);
+
+            var entryCreationInfo = new EntryCreationInfo(userId, entryBuildInfo.ActivityId);
             Entry modelEntry;
             try
             {

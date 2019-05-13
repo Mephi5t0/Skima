@@ -8,7 +8,7 @@ namespace Client.Models.Auth
         /// Логин пользователя
         /// </summary>
         [DataMember(IsRequired = true)]
-        public string Login { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         /// Пароль пользователя

@@ -9,12 +9,6 @@ namespace Client.Models.Users
     public class UserRegistrationInfo
     {
         /// <summary>
-        /// Логин пользователя
-        /// </summary>
-        [DataMember(IsRequired = false)]
-        public string Login { get; set; }
-
-        /// <summary>
         /// Пароль пользователя
         /// </summary>
         [DataMember(IsRequired = true)]

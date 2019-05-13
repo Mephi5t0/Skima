@@ -16,12 +16,6 @@ namespace Models.Users
         public string Id { get; set; }
 
         /// <summary>
-        /// Логин пользователя
-        /// </summary>
-        [BsonElement("Login")]
-        public string Login { get; set; }
-
-        /// <summary>
         /// Хэш пароля
         /// </summary>
         [BsonElement("PasswordHash")]
