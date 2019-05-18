@@ -32,7 +32,7 @@ namespace EventGenerator
             RegistrationEventInfoRepository registrationEventInfoRepository,
             SubscribeEventInfoRepository subscribeEventInfoRepository,
             ActivityFinishedRepository activityFinishedInfoRepository,
-            StartSprintEventRepository startSprintEventRepository, ActivityRepository activityRepository, MaraphoneRepository maraphoneRepository)
+            StartSprintEventRepository startSprintEventRepository)
         {
             this.userRepository = userRepository;
             this.entryRepository = entryRepository;
@@ -41,8 +41,6 @@ namespace EventGenerator
             this.subscribeEventInfoRepository = subscribeEventInfoRepository;
             this.activityFinishedInfoRepository = activityFinishedInfoRepository;
             this.startSprintEventRepository = startSprintEventRepository;
-            this.activityRepository = activityRepository;
-            this.maraphoneRepository = maraphoneRepository;
         }
 
 
@@ -72,6 +70,7 @@ namespace EventGenerator
                 }
             }
         }
+
 
         public async void GenerateEventOfSubscription()
         {

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Auth;
 using API.Errors;
+using Client.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -50,7 +51,12 @@ namespace API.Controllers
                 return BadRequest("Invalid login or password");
             }
 
-            return Ok(encodedJwt);
+            var authResult = new AuthResult
+            {
+                Token = encodedJwt
+            };
+                
+            return Ok(authResult);
         }
         
         [HttpDelete]

@@ -55,5 +55,10 @@ namespace EventGenerator.Models
         /// </summary>
         [BsonElement("IsChecked")]
         public bool IsChecked  { get; set; }
+        
+        /// <summary>
+        /// Идентификатор активности
+        /// </summary>
+        public string ActivityId { get; set; }
     }
 }
