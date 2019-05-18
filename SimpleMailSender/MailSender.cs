@@ -41,22 +41,25 @@ namespace SimpleMailSender
         }
 
         private static async Task SendEmailAsync(string receiverAddress, Attachment attachment, string subject,
-            string description)
+            string fileName)
         {
-            var from = new MailAddress("skima.mail4@gmail.com", "Skima");
-            var to = new MailAddress(receiverAddress);
-            var m = new MailMessage(from, to);
+            var sourceMail = new MailAddress("skima.mail4@gmail.com", "Skima");
+            var destinyMail = new MailAddress(receiverAddress);
+            var message = new MailMessage(sourceMail, destinyMail);
             if (attachment != null)
             {
-                m.Attachments.Add(attachment);
+                message.Attachments.Add(attachment);
             }
 
-            m.Subject = subject;
-            m.Body = description;
+            var bodyContent = File.ReadAllText($"html/{fileName}");
+            message.Subject = subject;
+            message.Body = bodyContent;
+            message.IsBodyHtml = true;
+            
             var smtp = new SmtpClient("smtp.gmail.com", 587);
             smtp.Credentials = new NetworkCredential("skima.mail4@gmail.com", "backendskima");
             smtp.EnableSsl = true;
-            await smtp.SendMailAsync(m);
+            await smtp.SendMailAsync(message);
         }
 
         public async void NotifyOnRegistration()
@@ -66,7 +69,7 @@ namespace SimpleMailSender
             {
                 if (!user.IsChecked)
                 {
-                    SendEmailAsync(user.Email, null, "Регистрация", "Пользователь успешно прошёл регистрацию")
+                    SendEmailAsync(user.Email, null, "Регистрация", "skima_registration.html")
                         .GetAwaiter();
                     var regestrationEventInfo = new RegistrationEventInfo()
                     {
@@ -89,7 +92,7 @@ namespace SimpleMailSender
             {
                 if (!entry.IsChecked)
                 {
-                    SendEmailAsync(entry.Email, null, "Подписка", entry.Description).GetAwaiter();
+                    SendEmailAsync(entry.Email, null, "Подписка", "subscribe.html").GetAwaiter();
                     var subscribeEventInfo = new SubscribeEventInfo()
                     {
                         FirstName = entry.FirstName,
@@ -118,7 +121,7 @@ namespace SimpleMailSender
                         if (entry.ActivityId == info.ActivityId)
                         {
                             SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, null,
-                                "Завершение активности", info.Description).GetAwaiter();
+                                "Завершение активности", "skima_finish.html").GetAwaiter();
                         }
                     }
 
@@ -159,7 +162,7 @@ namespace SimpleMailSender
 
                                     SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, attachment,
                                         "Начало Спринта",
-                                        null
+                                        "skima_start.html"
                                     ).GetAwaiter();
                                 }
                                 else
