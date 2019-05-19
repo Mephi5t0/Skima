@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using API.Auth;
 using API.Errors;
+using Client.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -50,7 +51,12 @@ namespace API.Controllers
                 return BadRequest("Invalid login or password");
             }
 
-            return Ok(encodedJwt);
+            var authResult = new AuthResult
+            {
+                Token = encodedJwt
+            };
+                
+            return Ok(authResult);
         }
         
         [HttpDelete]
@@ -68,10 +74,20 @@ namespace API.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Refresh([FromHeader] string token, [FromHeader] string refreshToken)
+        public async Task<IActionResult> Refresh()
         {
+            var refreshToken = User.FindFirstValue("refreshToken");
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Substring(7);
+            
             var principal = authenticator.GetPrincipalFromExpiredToken(token);
             var userId = principal.Claims.First(claim => claim.Type == "userId").ToString();
+            
+            if (userId == null)
+            {
+                var error = ServiceErrorResponses.InvalidClaims("userId");
+                return BadRequest(error);
+            }
+            
             var savedRefreshToken = await tokenRepository.GetRefreshTokenAsync(userId);
             if (savedRefreshToken != refreshToken)
             {
@@ -85,7 +101,7 @@ namespace API.Controllers
 
             return new ObjectResult(new
             {
-                accessToken = newJwtToken,
+                token = newJwtToken,
                 refreshToken = newRefreshToken
             });
         }

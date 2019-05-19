@@ -7,6 +7,12 @@ namespace Models.Tokens
     public class Token
     {
         /// <summary>
+        /// Идентификатор токена
+        /// </summary>
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        
+        /// <summary>
         /// Логин пользователя
         /// </summary>
         [BsonElement("UserId")]
