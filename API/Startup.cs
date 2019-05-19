@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using API.Auth;
+using EventGenerator.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,8 +41,14 @@ namespace API
             services.AddSingleton<ActivityRepository>();
             services.AddSingleton<ContentRepository>();
             services.AddSingleton<EntryRepository>();
+            services.AddSingleton<ActivityFinishedRepository>();
+            services.AddSingleton<RegistrationEventInfoRepository>();
+            services.AddSingleton<StartSprintEventRepository>();
+            services.AddSingleton<SubscribeEventInfoRepository>();
+            
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
+            services.AddHostedService<CronWorker>();
 //            services.AddHostedService<AuthDaemon>();
 
             services.AddCors();

@@ -26,22 +26,31 @@ namespace EventGenerator.Repository
             return Task.FromResult(result);
         }
 
-        public Task<RegistrationEventInfo> CreateRegistrationEventInfoAsync(RegistrationEventInfo newRegistrationEventInfo)
+        public Task<RegistrationEventInfo> CreateRegistrationEventInfoAsync(
+            RegistrationEventInfo newRegistrationEventInfo)
         {
             if (newRegistrationEventInfo == null)
             {
                 throw new ArgumentNullException();
             }
-            
+
             registrationEventInfo.InsertOne(newRegistrationEventInfo);
             return Task.FromResult(newRegistrationEventInfo);
         }
-        
-        public Task UpdateAsync(string id, RegistrationEventInfo registrationEventInfo)
+
+        public Task UpdateAsync(RegistrationEventInfo user)
         {
-            this.registrationEventInfo.ReplaceOne(info => info.Id == id, registrationEventInfo);
+            var newRegestrationEventInfo = new RegistrationEventInfo()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                RegisteredAt = user.RegisteredAt,
+                IsChecked = true
+            };
+            this.registrationEventInfo.ReplaceOne(info => info.Id == user.Id, newRegestrationEventInfo);
 
             return Task.CompletedTask;
         }
     }
-} 
+}

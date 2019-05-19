@@ -41,7 +41,7 @@ namespace SimpleMailSender
         }
 
         private static async Task SendEmailAsync(string receiverAddress, Attachment attachment, string subject,
-            string fileName)
+            string body)
         {
             var sourceMail = new MailAddress("skima.mail4@gmail.com", "Skima");
             var destinyMail = new MailAddress(receiverAddress);
@@ -51,11 +51,12 @@ namespace SimpleMailSender
                 message.Attachments.Add(attachment);
             }
 
-            var bodyContent = File.ReadAllText($"html/{fileName}");
             message.Subject = subject;
-            message.Body = bodyContent;
+
+
+            message.Body = body;
             message.IsBodyHtml = true;
-            
+
             var smtp = new SmtpClient("smtp.gmail.com", 587);
             smtp.Credentials = new NetworkCredential("skima.mail4@gmail.com", "backendskima");
             smtp.EnableSsl = true;
@@ -64,22 +65,22 @@ namespace SimpleMailSender
 
         public async void NotifyOnRegistration()
         {
+            var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
+            string messageBody;
+            using (var streamReader =
+                new StreamReader($"{directoryInfo.Parent.FullName}/SimpleMailSender/html/skima_registration.html"))
+            {
+                messageBody = streamReader.ReadToEnd();
+            }
+
             var users = await registrationEventInfoRepository.GetAllRegistrationEventInfo();
             foreach (var user in users)
             {
                 if (!user.IsChecked)
                 {
-                    SendEmailAsync(user.Email, null, "Регистрация", "skima_registration.html")
+                    SendEmailAsync(user.Email, null, "Регистрация", messageBody)
                         .GetAwaiter();
-                    var regestrationEventInfo = new RegistrationEventInfo()
-                    {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email,
-                        RegisteredAt = user.RegisteredAt,
-                        IsChecked = true
-                    };
-                    await registrationEventInfoRepository.UpdateAsync(user.Id, regestrationEventInfo);
+                    await registrationEventInfoRepository.UpdateAsync(user);
                 }
             }
         }
@@ -87,29 +88,37 @@ namespace SimpleMailSender
 
         public async void NotifyOnSubscribeOnEvent()
         {
+            var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
+            string sourceHtml;
+            using (var streamReader =
+                new StreamReader($"{directoryInfo.Parent.FullName}/SimpleMailSender/html/subscribe.html"))
+            {
+                sourceHtml = streamReader.ReadToEnd();
+            }
+
             var entries = await subscribeEventInfoRepository.GetAllSubscribeEventInfo();
             foreach (var entry in entries)
             {
                 if (!entry.IsChecked)
                 {
-                    SendEmailAsync(entry.Email, null, "Подписка", "subscribe.html").GetAwaiter();
-                    var subscribeEventInfo = new SubscribeEventInfo()
-                    {
-                        FirstName = entry.FirstName,
-                        LastName = entry.LastName,
-                        Email = entry.Email,
-                        Title = entry.Title,
-                        Description = entry.Description,
-                        CreatedAt = entry.CreatedAt,
-                        IsChecked = false
-                    };
-                    await subscribeEventInfoRepository.UpdateAsync(entry.Id, subscribeEventInfo);
+                    var bodyMessage = sourceHtml.Replace("НАЗВАНИЕ СПРИНТА", entry.Title);
+
+                    SendEmailAsync(entry.Email, null, "Подписка", bodyMessage).GetAwaiter();
+                    await subscribeEventInfoRepository.UpdateAsync(entry);
                 }
             }
         }
 
         public async void NotifyOnActivityFinished()
         {
+            var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
+            string sourceHtml;
+            using (var streamReader =
+                new StreamReader($"{directoryInfo.Parent.FullName}/SimpleMailSender/html/skima_finish.html"))
+            {
+                sourceHtml = streamReader.ReadToEnd();
+            }
+
             var activityInfo = await activityFinishedInfoRepository.GetAllActivityEventInfo();
             foreach (var info in activityInfo)
             {
@@ -120,25 +129,26 @@ namespace SimpleMailSender
                     {
                         if (entry.ActivityId == info.ActivityId)
                         {
+                            var bodyMessage = sourceHtml.Replace("НАЗВАНИЕ МАРАФОНА", info.Title);
                             SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, null,
-                                "Завершение активности", "skima_finish.html").GetAwaiter();
+                                "Завершение активности", bodyMessage).GetAwaiter();
                         }
                     }
-
-                    var newActivityFinishedInfo = new ActivityFinishedInfo()
-                    {
-                        ActivityId = info.ActivityId,
-                        Title = info.Title,
-                        Description = info.Description,
-                        IsChecked = true
-                    };
-                    await activityFinishedInfoRepository.UpdateAsync(info.Id, newActivityFinishedInfo);
+                    await activityFinishedInfoRepository.UpdateAsync(info);
                 }
             }
         }
 
         public async void NotifyOnStartSprintEvent()
         {
+            var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
+            string sourceHtml;
+            using (var streamReader =
+                new StreamReader($"{directoryInfo.Parent.FullName}/SimpleMailSender/html/skima_task.html"))
+            {
+                sourceHtml = streamReader.ReadToEnd();
+            }
+
             var sprints = await startSprintEventRepository.GetAllSubscribeEventInfo();
             foreach (var sprint in sprints)
             {
@@ -154,40 +164,32 @@ namespace SimpleMailSender
                             {
                                 Attachment attachment = null;
                                 var content = contentRepository.GetAsync(task.ContentId).Result;
+                                var messageBody = sourceHtml.Replace("Заголовок задания", task.Title);
                                 if (content.Type != "text")
                                 {
+                                    messageBody = messageBody.Replace("ОПИСАНИЕ", "");
                                     var memoryStream = new MemoryStream();
                                     await memoryStream.WriteAsync(content.Data, 0, content.Data.Length);
                                     attachment = new Attachment(memoryStream, MediaTypeNames.Application.Octet);
 
                                     SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, attachment,
                                         "Начало Спринта",
-                                        "skima_start.html"
+                                        messageBody
                                     ).GetAwaiter();
                                 }
                                 else
                                 {
+                                    messageBody = messageBody.Replace("ОПИСАНИЕ",
+                                        Encoding.UTF8.GetString(content.Data));
                                     SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, attachment,
                                         "Начало Спринта",
-                                        Encoding.UTF8.GetString(content.Data)
+                                        messageBody
                                     ).GetAwaiter();
                                 }
                             }
                         }
                     }
-
-                    var newSprintInfo = new StartSprintEventInfo()
-                    {
-                        Number = sprint.Number,
-                        ActivityId = sprint.ActivityId,
-                        StartAt = sprint.StartAt,
-                        Description = sprint.Description,
-                        Tasks = sprint.Tasks,
-                        CreatedAt = sprint.CreatedAt,
-                        Duration = sprint.Duration,
-                        IsChecked = true
-                    };
-                    await startSprintEventRepository.UpdateAsync(sprint.Id, newSprintInfo);
+                    await startSprintEventRepository.UpdateAsync(sprint);
                 }
             }
         }
