@@ -7,3 +7,4 @@ namespace Client.Models.Auth
         /// </summary>
         public string Token { get; set; }
     }
+}
