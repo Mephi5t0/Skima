@@ -37,9 +37,22 @@ namespace EventGenerator.Repository
         }
 
 
-        public Task UpdateAsync(string id, StartSprintEventInfo startSprintEventInfo)
+        public Task UpdateAsync(StartSprintEventInfo sprint)
         {
-            this.startSprintEventInfo.ReplaceOne(info => info.Id == id, startSprintEventInfo);
+            var newSprintInfo = new StartSprintEventInfo()
+            {
+                Number = sprint.Number,
+                ActivityId = sprint.ActivityId,
+                StartAt = sprint.StartAt,
+                Description = sprint.Description,
+                Tasks = sprint.Tasks,
+                CreatedAt = sprint.CreatedAt,
+                Duration = sprint.Duration,
+                IsChecked = true
+            };
+
+
+            this.startSprintEventInfo.ReplaceOne(info => info.Id == sprint.Id, newSprintInfo);
 
             return Task.CompletedTask;
         }

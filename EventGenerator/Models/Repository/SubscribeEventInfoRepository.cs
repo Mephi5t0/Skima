@@ -38,9 +38,20 @@ namespace EventGenerator.Repository
             return Task.FromResult(newSubscribeEventInfoEventInfo);
         }
         
-        public Task UpdateAsync(string id, SubscribeEventInfo subscribeEventInfo)
+        public Task UpdateAsync(SubscribeEventInfo entry)
         {
-            this.subscribeEventInfo.ReplaceOne(info => info.Id == id, subscribeEventInfo);
+            var subscribeEventInfo = new SubscribeEventInfo()
+            {
+                FirstName = entry.FirstName,
+                LastName = entry.LastName,
+                Email = entry.Email,
+                Title = entry.Title,
+                Description = entry.Description,
+                CreatedAt = entry.CreatedAt,
+                IsChecked = false
+            };
+            
+            this.subscribeEventInfo.ReplaceOne(info => info.Id ==entry.Id, subscribeEventInfo);
 
             return Task.CompletedTask;
         }

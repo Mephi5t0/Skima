@@ -38,9 +38,18 @@ namespace EventGenerator.Repository
             return Task.FromResult(newActivityFinishedInfo);
         }
         
-        public Task UpdateAsync(string id, ActivityFinishedInfo activityFinishedInfo)
+        public Task UpdateAsync(ActivityFinishedInfo info)
         {
-            this.activityFinishedInfo.ReplaceOne(user => user.Id == id, activityFinishedInfo);
+            var newActivityFinishedInfo = new ActivityFinishedInfo()
+            {
+                ActivityId = info.ActivityId,
+                Title = info.Title,
+                Description = info.Description,
+                IsChecked = true
+            };
+            
+            
+            activityFinishedInfo.ReplaceOne(user => user.Id == info.Id, newActivityFinishedInfo);
 
             return Task.CompletedTask;
         }

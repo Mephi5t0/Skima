@@ -28,6 +28,9 @@ namespace API
         private void DoWork(object state)
         {
             mailSender.NotifyOnRegistration();
+            mailSender.NotifyOnSubscribeOnEvent();
+            mailSender.NotifyOnStartSprintEvent();
+            mailSender.NotifyOnActivityFinished();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
