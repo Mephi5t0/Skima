@@ -23,7 +23,7 @@ namespace API.Controllers
             this.maraphoneRepository = maraphoneRepository;
         }
         
-        [HttpGet(Name = "GetMaraphone")]
+        [HttpGet("{id}", Name = "GetMaraphone")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)

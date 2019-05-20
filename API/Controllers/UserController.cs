@@ -54,7 +54,7 @@ namespace API.Controllers
             return CreatedAtRoute("GetUser", clientUser);
         }
 
-        [HttpGet(Name = "GetUser")]
+        [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)
