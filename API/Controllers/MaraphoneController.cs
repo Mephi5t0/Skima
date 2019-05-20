@@ -51,7 +51,7 @@ namespace API.Controllers
         {
             if (buildInfo == null)
             {
-                var error = ServiceErrorResponses.InvalidRouteParameter("maraphoneId");
+                var error = ServiceErrorResponses.BodyIsMissing("MaraphoneBuildInfo");
                 return this.BadRequest(error);
             }
             var userId = User.FindFirstValue("userId");

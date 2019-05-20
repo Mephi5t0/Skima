@@ -74,10 +74,20 @@ namespace API.Controllers
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Refresh([FromHeader] string token, [FromHeader] string refreshToken)
+        public async Task<IActionResult> Refresh()
         {
+            var refreshToken = User.FindFirstValue("refreshToken");
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Substring(7);
+            
             var principal = authenticator.GetPrincipalFromExpiredToken(token);
             var userId = principal.Claims.First(claim => claim.Type == "userId").ToString();
+            
+            if (userId == null)
+            {
+                var error = ServiceErrorResponses.InvalidClaims("userId");
+                return BadRequest(error);
+            }
+            
             var savedRefreshToken = await tokenRepository.GetRefreshTokenAsync(userId);
             if (savedRefreshToken != refreshToken)
             {
@@ -91,7 +101,7 @@ namespace API.Controllers
 
             return new ObjectResult(new
             {
-                accessToken = newJwtToken,
+                token = newJwtToken,
                 refreshToken = newRefreshToken
             });
         }

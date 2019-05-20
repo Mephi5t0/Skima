@@ -30,7 +30,7 @@ namespace SimpleMailSender
             RegistrationEventInfoRepository registrationEventInfoRepository,
             SubscribeEventInfoRepository subscribeEventInfoRepository,
             ActivityFinishedRepository activityFinishedInfoRepository,
-            StartSprintEventRepository startSprintEventRepository, ContentRepository contentRepository)
+            StartSprintEventRepository startSprintEventRepository, ContentRepository contentRepository, EntryRepository entryRepository)
         {
             this.userRepository = userRepository;
             this.registrationEventInfoRepository = registrationEventInfoRepository;
@@ -65,6 +65,7 @@ namespace SimpleMailSender
 
         public async void NotifyOnRegistration()
         {
+
             var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
             string messageBody;
             using (var streamReader =
@@ -77,6 +78,7 @@ namespace SimpleMailSender
             foreach (var user in users)
             {
                 if (!user.IsChecked)
+
                 {
                     SendEmailAsync(user.Email, null, "Регистрация", messageBody)
                         .GetAwaiter();
@@ -109,6 +111,7 @@ namespace SimpleMailSender
             }
         }
 
+
         public async void NotifyOnActivityFinished()
         {
             var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -139,6 +142,7 @@ namespace SimpleMailSender
             }
         }
 
+
         public async void NotifyOnStartSprintEvent()
         {
             var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -162,6 +166,7 @@ namespace SimpleMailSender
                             var tasks = sprint.Tasks;
                             foreach (var task in tasks)
                             {
+
                                 Attachment attachment = null;
                                 var content = contentRepository.GetAsync(task.ContentId).Result;
                                 var messageBody = sourceHtml.Replace("Заголовок задания", task.Title);

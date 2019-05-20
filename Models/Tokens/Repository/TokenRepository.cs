@@ -59,7 +59,7 @@ namespace Models.Tokens.Repository
             return Task.CompletedTask;
         }
         
-        public Task DeleteExpiredTokes()
+        public void DeleteExpiredTokes()
         {
             var allTokens = tokens.Find(token => true).ToList();
 
@@ -70,8 +70,6 @@ namespace Models.Tokens.Repository
                     tokens.DeleteOne(t => t.RefreshToken == token.RefreshToken);
                 }
             }
-            
-            return Task.CompletedTask;
         }
     }
 }
