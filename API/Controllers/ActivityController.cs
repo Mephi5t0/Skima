@@ -46,7 +46,6 @@ namespace API.Controllers
                 return this.BadRequest(error);
             }
             
-            
             var maraphoneId = buildInfo.MaraphoneId;
             var maraphone = await maraphoneRepository.GetAsync(maraphoneId, cancellationToken);
             if (maraphone == null)
@@ -58,15 +57,13 @@ namespace API.Controllers
             var duration = maraphone.Duration;
             var endAt = buildInfo.StartAt + duration;
             
-//            var activityStatus = StatusConverter.Convert(buildInfo.Status);
-
             var activityCreationInfo = new ActivityCreationInfo(buildInfo.MaraphoneId, buildInfo.Tags,
                 userId, buildInfo.Experts, buildInfo.StartAt, endAt);
 
             var modelActivity = await activityRepository.CreateAsync(activityCreationInfo, endAt, cancellationToken);
             var clientActivity = ActivityConverter.Convert(modelActivity);
-            
-            return CreatedAtRoute("https://skima.cf/v1/activities", clientActivity);
+
+            return Created("https://skima.cf/v1/activities", clientActivity);
         }
 
         [HttpGet]

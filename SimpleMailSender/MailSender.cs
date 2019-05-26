@@ -38,6 +38,7 @@ namespace SimpleMailSender
             this.activityFinishedInfoRepository = activityFinishedInfoRepository;
             this.startSprintEventRepository = startSprintEventRepository;
             this.contentRepository = contentRepository;
+            this.entryRepository = entryRepository;
         }
 
         private static async Task SendEmailAsync(string receiverAddress, Attachment attachment, string subject,

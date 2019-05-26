@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
+using Client.Models.Maraphone;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Maraphone;
@@ -44,6 +46,26 @@ namespace API.Controllers
             var clientMaraphone = MaraphoneConverter.Convert(modelMaraphone);
 
             return Ok(clientMaraphone);
+        }
+        
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> SearchAsync([FromQuery] MaraphoneInfoSearchQuery infoSearchQuery, CancellationToken cancellationToken)
+        {
+            if (infoSearchQuery == null)
+            {
+                var error = ServiceErrorResponses.InvalidQuery("MaraphoneInfoSearchQuery");
+                return this.BadRequest(error);
+            }
+
+            var modelMaraphones = await maraphoneRepository.SearchAsync(infoSearchQuery, cancellationToken);
+            var clientMaraphones = modelMaraphones.Select(MaraphoneConverter.Convert).ToList();
+            var clientMaraphonesList = new MaraphoneList
+            {
+                Maraphones = clientMaraphones
+            };
+            
+            return Ok(clientMaraphonesList);
         }
 
         [HttpPost]

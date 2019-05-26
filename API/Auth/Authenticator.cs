@@ -73,7 +73,7 @@ namespace API.Auth
                     claims = new List<Claim>
                     {
                         new Claim("userId", user.Id),
-                        new Claim("RefreshToken", refreshToken)
+                        new Claim("refreshToken", refreshToken)
                     };
                     
                     await tokenRepository.SaveRefreshTokenAsync(user.Id, refreshToken);
