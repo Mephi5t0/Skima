@@ -5,6 +5,5 @@ namespace Client.Models.Auth
         /// <summary>
         /// Access токен
         /// </summary>
-        public string Token {get; set;}
+        public string Token { get; set; }
     }
-}
