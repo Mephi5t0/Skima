@@ -4,7 +4,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Models.Maraphone.Task
 {
-    public class Task
+    public class 
+        
+        Task
     {
         /// <summary>
         /// Дата создания задачи

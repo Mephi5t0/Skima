@@ -10,10 +10,12 @@ namespace API
     {
         private const long PeriodInSeconds = 30;
         private MailSender mailSender;
+        private EventGenerator.EventGenerator eventGenerator;
         private Timer timer;
 
-        public CronWorker(MailSender mailSender)
+        public CronWorker(MailSender mailSender, EventGenerator.EventGenerator eventGenerator)
         {
+            this.eventGenerator = eventGenerator;
             this.mailSender = mailSender;
         }
 
@@ -27,6 +29,10 @@ namespace API
 
         private void DoWork(object state)
         {
+            eventGenerator.GenerateEventForUnRegistrationUser();
+            eventGenerator.GenerateEventOfSubscription();
+            eventGenerator.GenerateEventOfEndActivityAsync();
+            eventGenerator.GenerateEventOfStartSprintAsync();
             mailSender.NotifyOnRegistration();
             mailSender.NotifyOnSubscribeOnEvent();
             mailSender.NotifyOnStartSprintEvent();

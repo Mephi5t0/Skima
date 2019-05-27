@@ -21,7 +21,7 @@ namespace Models.Activity.Repository
 
         public Task<List<Activity>> GetAsync()
         {
-            var search = activities.Find(token => true);
+            var search = activities.Find(activity => true);
             var result = search.ToList();
 
             return Task.FromResult(result);
@@ -121,6 +121,29 @@ namespace Models.Activity.Repository
             activities.DeleteOne(activity => activity.Id == id);
 
             return Task.CompletedTask;
+        }
+
+        public void ChangeActivitiesStatus()
+        {
+            var allActivities = this.activities.Find(activity => true).ToList();
+            
+            foreach (var activity in allActivities)
+            {
+                if (activity.Status == Status.Canceled || activity.Status == Status.Announced)
+                {
+                    continue;
+                }
+                if (activity.StartAt <= DateTime.Now && activity.EndAt > DateTime.Now && activity.Status == Status.New)
+                {
+                    activity.Status = Status.Running;
+                    activities.ReplaceOne(x => x.Id == activity.Id, activity);
+                }
+                else if (activity.EndAt <= DateTime.Now && activity.Status == Status.Running)
+                {
+                    activity.Status = Status.Finished;
+                    activities.ReplaceOne(x => x.Id == activity.Id, activity);
+                }
+            }
         }
     }
 }

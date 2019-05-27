@@ -59,5 +59,12 @@ namespace Models.Entries.Repository
             
             return Task.FromResult(result);
         }
+
+        public Task ReplaceOne(string id, Entry entryIn)
+        {
+            entries.ReplaceOne(entry => entry.Id == id, entryIn);
+
+            return Task.CompletedTask;
+        }
     }
 }

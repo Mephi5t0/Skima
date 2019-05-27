@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Models.Tokens.Repository;
 
-namespace API.Auth
+namespace API.CronWorkers
 {
     internal class AuthDaemon : IHostedService, IDisposable
     {
@@ -12,7 +12,7 @@ namespace API.Auth
         private readonly TokenRepository tokenRepository;
         private Timer timer;
 
-        public AuthDaemon(IAuthenticator authenticator, TokenRepository tokenRepository)
+        public AuthDaemon(TokenRepository tokenRepository)
         {
             this.tokenRepository = tokenRepository;
         }
