@@ -49,6 +49,8 @@ namespace API
             
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
+            services.AddSingleton<SettingsRepository>();
+            services.AddSingleton<EventGenerator.EventGenerator>();
             services.AddHostedService<CronWorker>();
             services.AddHostedService<AuthDaemon>();
             services.AddHostedService<ActivityStatusModifier>();
