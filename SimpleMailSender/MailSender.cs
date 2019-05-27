@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using EventGenerator;
-using EventGenerator.Models;
 using EventGenerator.Repository;
 using Models.Entries.Repository;
 using Models.Maraphone.Task.Repository;
-using Models.Users;
 using Models.Users.Repository;
 
 namespace SimpleMailSender
@@ -104,7 +99,7 @@ namespace SimpleMailSender
             {
                 if (!entry.IsChecked)
                 {
-                    var bodyMessage = sourceHtml.Replace("НАЗВАНИЕ СПРИНТА", entry.Title);
+                    var bodyMessage = sourceHtml.Replace("НАЗВАНИЕ МАРАФОНА", entry.Title);
 
                     SendEmailAsync(entry.Email, null, "Подписка", bodyMessage).GetAwaiter();
                     await subscribeEventInfoRepository.UpdateAsync(entry);
@@ -153,6 +148,7 @@ namespace SimpleMailSender
             {
                 sourceHtml = streamReader.ReadToEnd();
             }
+            
 
             var sprints = await startSprintEventRepository.GetAllSubscribeEventInfo();
             foreach (var sprint in sprints)
