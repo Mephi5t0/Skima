@@ -60,9 +60,10 @@ namespace API.Controllers
         }
         
         [HttpDelete]
-        public async Task<IActionResult> Token([FromQuery] string refreshToken,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> Token()
         {
+            var refreshToken = User.FindFirstValue("refreshToken");
+            
             if (refreshToken == null)
             {
                 return BadRequest("Refresh token was expected, but received null");

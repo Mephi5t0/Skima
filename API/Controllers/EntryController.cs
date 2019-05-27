@@ -40,8 +40,6 @@ namespace API.Controllers
                 return this.BadRequest(error);
             }
 
-//            var entryStatus = StatusConverter.Convert(entryBuildInfo.Status);
-
             var entryCreationInfo = new EntryCreationInfo(userId, entryBuildInfo.ActivityId);
             Entry modelEntry;
             try
@@ -55,10 +53,10 @@ namespace API.Controllers
             
             var clientEntry = EntryConverter.Convert(modelEntry);
             
-            return CreatedAtRoute("GetEntry", clientEntry);
+            return Created("https://skima.cf/v1/entries", clientEntry);
         }
 
-        [HttpGet(Name = "GetEntry")]
+        [HttpGet]
         public async Task<IActionResult> GetAsync([FromRoute] string id,
             CancellationToken cancellationToken)
         {

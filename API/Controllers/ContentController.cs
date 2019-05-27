@@ -2,11 +2,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
+using Client.Models.Maraphone.Task;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Maraphone;
 using Models.Maraphone.Task;
 using Models.Maraphone.Task.Repository;
+using ContentResult = Client.Models.Maraphone.Task.ContentResult;
 
 namespace API.Controllers
 {
@@ -33,7 +35,7 @@ namespace API.Controllers
                 return this.BadRequest(error);
             }
 
-            var contentType = HttpContext.Request.Headers["Content-Type"].FirstOrDefault();
+            var contentType = HttpContext.Request.Headers["Skima-Data-Type"].FirstOrDefault();
 
             if (contentType == null)
             {
@@ -42,8 +44,12 @@ namespace API.Controllers
 
             var contentCreationInfo = new ContentCreationInfo(contentType, contentBuildInfo.Data);
             var document = await contentRepository.CreateAsync(contentCreationInfo, cancellationToken);
+            var result = new ContentResult
+            {
+                Id = document.Id
+            };
             
-            return Ok(document.Id);
+            return Ok(result);
         }
 
         [HttpGet]
