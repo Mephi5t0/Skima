@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client.Models.Maraphone;
 using EventGenerator.Models;
+using EventGenerator.Models.Repository;
 using EventGenerator.Repository;
 using Models.Activity;
 using Models.Activity.Repository;
@@ -115,8 +116,7 @@ namespace EventGenerator
                 if (activity.EndAt.CompareTo(dateOfLastCheckedActivity) > 0 &&
                     activity.EndAt.CompareTo(DateTime.Now) > 0)
                 {
-                    var maraphoneByActivity =
-                        await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
+                    var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
                     var activityFinishedInfo = new ActivityFinishedInfo()
                     {
                         ActivityId = activity.Id,

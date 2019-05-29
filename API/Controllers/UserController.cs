@@ -51,10 +51,13 @@ namespace API.Controllers
 
             var clientUser = UserConverter.Convert(result);
 
-            return Created("https://skima.cf/v1/users", clientUser);
+            return CreatedAtRoute(
+                "GetUser",
+                new { id = clientUser.Id }, 
+                clientUser);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)

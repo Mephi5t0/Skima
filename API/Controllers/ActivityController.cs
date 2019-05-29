@@ -63,10 +63,13 @@ namespace API.Controllers
             var modelActivity = await activityRepository.CreateAsync(activityCreationInfo, endAt, cancellationToken);
             var clientActivity = ActivityConverter.Convert(modelActivity);
 
-            return Created("https://skima.cf/v1/activities", clientActivity);
+            return CreatedAtRoute(
+                "GetActivity", 
+                new { id = clientActivity.Id },
+                clientActivity);
         }
 
-        [HttpGet]
+        [HttpGet("{id}", Name = "GetActivity")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)

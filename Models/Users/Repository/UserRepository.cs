@@ -20,8 +20,7 @@ namespace Models.Users.Repository
 
         public Task<List<User>> GetAllAsync()
         {
-            var search = users.Find(user => true);
-            var result = search.ToList();
+            var result = users.Find(user => true).ToList();
 
             return Task.FromResult(result);
         }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using API.Auth;
 using EventGenerator.Repository;
 using API.CronWorkers;
+using EventGenerator.Models.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,7 +103,7 @@ namespace API
             }
 
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            
+
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

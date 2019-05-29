@@ -53,10 +53,13 @@ namespace API.Controllers
             
             var clientEntry = EntryConverter.Convert(modelEntry);
             
-            return Created("https://skima.cf/v1/entries", clientEntry);
+            return CreatedAtRoute(
+                "GetEntry", 
+                new { id = clientEntry.Id },
+                clientEntry);
         }
 
-        [HttpGet]
+        [HttpGet("{id}", Name = "GetEntry")]
         public async Task<IActionResult> GetAsync([FromRoute] string id,
             CancellationToken cancellationToken)
         {

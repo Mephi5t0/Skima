@@ -29,10 +29,10 @@ namespace API
 
         private void DoWork(object state)
         {
-            eventGenerator.GenerateEventForUnRegistrationUser();
-            eventGenerator.GenerateEventOfSubscription();
-            eventGenerator.GenerateEventOfEndActivityAsync();
-            eventGenerator.GenerateEventOfStartSprintAsync();
+//            eventGenerator.GenerateEventForUnRegistrationUser();
+//            eventGenerator.GenerateEventOfSubscription();
+//            eventGenerator.GenerateEventOfEndActivityAsync();
+//            eventGenerator.GenerateEventOfStartSprintAsync();
             mailSender.NotifyOnRegistration();
             mailSender.NotifyOnSubscribeOnEvent();
             mailSender.NotifyOnStartSprintEvent();

@@ -49,10 +49,13 @@ namespace API.Controllers
                 Id = document.Id
             };
             
-            return Ok(result);
+            return CreatedAtRoute(
+                "GetContent",
+                new { id = result.Id},
+                result);
         }
 
-        [HttpGet]
+        [HttpGet("{id}", Name = "GetContent")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)
