@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using API.Auth;
-using EventGenerator.Repository;
 using API.CronWorkers;
 using EventGenerator.Models.Repository;
+using EventGenerator.Settings.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

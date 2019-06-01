@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Models;
 using MongoDB.Driver;
 
-namespace EventGenerator.Repository
+namespace EventGenerator.Settings.Repository
 {
     public class SettingsRepository
     {
@@ -48,6 +48,7 @@ namespace EventGenerator.Repository
         {
             var lastUpdate = settigsEventOfSubscribeToActivity.Find(settings => true).SortByDescending(x => x.CreatedAt)
                 .FirstOrDefault();
+            
             return Task.FromResult(lastUpdate);
         }
 
@@ -66,6 +67,7 @@ namespace EventGenerator.Repository
         {
             var lastUpdate = settingsEventOfActivity.Find(setting => true)
                 .SortByDescending(x => x.DateOfLastCheckedActivity).FirstOrDefault();
+            
             return Task.FromResult(lastUpdate);
         }
 

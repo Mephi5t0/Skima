@@ -8,7 +8,7 @@ namespace API
 {
     internal class CronWorker : IHostedService, IDisposable
     {
-        private const long PeriodInSeconds = 30;
+        private const long PeriodInMinutes = 5;
         private MailSender mailSender;
         private EventGenerator.EventGenerator eventGenerator;
         private Timer timer;
@@ -22,17 +22,17 @@ namespace API
         public Task StartAsync(CancellationToken cancellationToken)
         {
             timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(PeriodInSeconds));
+                TimeSpan.FromMinutes(PeriodInMinutes));
 
             return Task.CompletedTask;
         }
 
         private void DoWork(object state)
         {
-//            eventGenerator.GenerateEventForUnRegistrationUser();
-//            eventGenerator.GenerateEventOfSubscription();
-//            eventGenerator.GenerateEventOfEndActivityAsync();
-//            eventGenerator.GenerateEventOfStartSprintAsync();
+            eventGenerator.GenerateEventForUnRegistrationUser();
+            eventGenerator.GenerateEventOfSubscription();
+            eventGenerator.GenerateEventOfEndActivityAsync();
+            eventGenerator.GenerateEventOfStartSprintAsync();
             mailSender.NotifyOnRegistration();
             mailSender.NotifyOnSubscribeOnEvent();
             mailSender.NotifyOnStartSprintEvent();

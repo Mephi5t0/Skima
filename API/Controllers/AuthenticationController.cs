@@ -11,10 +11,7 @@ using Client.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Models.Converters.Users;
 using Models.Tokens.Repository;
-using Models.Users;
-using Models.Users.Repository;
 
 namespace API.Controllers
 {
