@@ -34,7 +34,8 @@ namespace EventGenerator
             RegistrationEventInfoRepository registrationEventInfoRepository,
             SubscribeEventInfoRepository subscribeEventInfoRepository,
             ActivityFinishedRepository activityFinishedInfoRepository,
-            StartSprintEventRepository startSprintEventRepository, MaraphoneRepository maraphoneRepository, ActivityRepository activityRepository)
+            StartSprintEventRepository startSprintEventRepository, MaraphoneRepository maraphoneRepository,
+            ActivityRepository activityRepository)
         {
             this.userRepository = userRepository;
             this.entryRepository = entryRepository;
@@ -51,10 +52,11 @@ namespace EventGenerator
         public async void GenerateEventForUnRegistrationUser()
         {
             var dateOfLastCheckedRegistrationUser = await settingsRepository.GetLastRegistrationSettings();
-            var users =  await userRepository.GetAllAsync();
+            var users = await userRepository.GetAllAsync();
             foreach (var user in users)
             {
-                if (user.RegisteredAt.CompareTo(dateOfLastCheckedRegistrationUser.DateOfLastNotificationUser) > 0)
+                if (dateOfLastCheckedRegistrationUser == null ||
+                    user.RegisteredAt.CompareTo(dateOfLastCheckedRegistrationUser.DateOfLastNotificationUser) > 0)
                 {
                     var registrationEventInfo = new RegistrationEventInfo()
                     {
@@ -64,13 +66,13 @@ namespace EventGenerator
                         RegisteredAt = user.RegisteredAt,
                         IsChecked = false
                     };
-                     await registrationEventInfoRepository.CreateRegistrationEventInfoAsync(registrationEventInfo);
+                    await registrationEventInfoRepository.CreateRegistrationEventInfoAsync(registrationEventInfo);
 
                     var settingOfEventsRegistration = new SettingsEventOfRegistration()
                     {
                         DateOfLastNotificationUser = user.RegisteredAt
                     };
-                     await settingsRepository.CreateRegistrationEventSettingsAsync(settingOfEventsRegistration);
+                    await settingsRepository.CreateRegistrationEventSettingsAsync(settingOfEventsRegistration);
                 }
             }
         }
@@ -82,11 +84,12 @@ namespace EventGenerator
             var entries = await entryRepository.GetAllAsync();
             foreach (var entry in entries)
             {
-                if (entry.CreatedAt.CompareTo(dateOfLastCheckedEntry.CreatedAt) > 0)
+                if (dateOfLastCheckedEntry == null || entry.CreatedAt.CompareTo(dateOfLastCheckedEntry.CreatedAt) > 0)
                 {
                     var userByEntry = await userRepository.GetByIdAsync(entry.UserId);
                     var activity = await activityRepository.GetByIdAsync(entry.ActivityId);
-                    var maraphone = await maraphoneRepository.GetAsync(activity.MaraphoneId, cancellationToken: CancellationToken.None);
+                    var maraphone = await maraphoneRepository.GetAsync(activity.MaraphoneId,
+                        cancellationToken: CancellationToken.None);
                     var subscribeEventInfo = new SubscribeEventInfo()
                     {
                         FirstName = userByEntry.FirstName,
@@ -114,10 +117,12 @@ namespace EventGenerator
             var activities = await activityRepository.GetAsync();
             foreach (var activity in activities)
             {
-                if (activity.EndAt.CompareTo(dateOfLastCheckedActivity.DateOfLastCheckedActivity) > 0 &&
+                if (dateOfLastCheckedActivity == null ||
+                    activity.EndAt.CompareTo(dateOfLastCheckedActivity.DateOfLastCheckedActivity) > 0 &&
                     activity.EndAt.CompareTo(DateTime.Now) > 0)
                 {
-                    var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
+                    var maraphoneByActivity =
+                        await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
                     var activityFinishedInfo = new ActivityFinishedInfo()
                     {
                         ActivityId = activity.Id,
@@ -142,7 +147,7 @@ namespace EventGenerator
             foreach (var activity in activities)
             {
                 var allSprintsByActivity = await GetAllSprintsByActivity(activity);
-                var numberOfSprint = await GetNumberOfSprintAsync(activity, dateOfLastChecked.DateOfLastCheckedSprint);
+                var numberOfSprint = await GetNumberOfSprintAsync(activity, dateOfLastChecked);
                 if (numberOfSprint == -1)
                 {
                     continue;
@@ -150,8 +155,8 @@ namespace EventGenerator
 
                 var timeStartOfSprint = (numberOfSprint == 0)
                     ? activity.StartAt
-                    : activity.StartAt.Add(allSprintsByActivity[numberOfSprint-1].Duration);
-                
+                    : activity.StartAt.Add(allSprintsByActivity[numberOfSprint - 1].Duration);
+
                 var startSprintEventInfo = new StartSprintEventInfo()
                 {
                     Number = numberOfSprint,
@@ -171,11 +176,13 @@ namespace EventGenerator
             }
         }
 
-        private async Task<int> GetNumberOfSprintAsync(Activity activity, DateTime dateOfLastChecked)
+        private async Task<int> GetNumberOfSprintAsync(Activity activity,
+            SettingsEventOfStartSprint settingsEventOfStartSprint)
         {
             var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
             var sprints = maraphoneByActivity.Sprints;
-            if (activity.StartAt.CompareTo(DateTime.Now) > 0 && activity.StartAt.CompareTo(dateOfLastChecked) > 0)
+            if (settingsEventOfStartSprint == null || activity.StartAt.CompareTo(DateTime.Now) > 0 &&
+                activity.StartAt.CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
             {
                 return await Task.FromResult(0);
             }
@@ -183,7 +190,7 @@ namespace EventGenerator
             for (var i = 1; i < sprints.Length; i++)
             {
                 if (activity.StartAt.Add(sprints[i - 1].Duration).CompareTo(DateTime.Now) > 0 &&
-                    activity.StartAt.Add(sprints[i - 1].Duration).CompareTo(dateOfLastChecked) > 0)
+                    activity.StartAt.Add(sprints[i - 1].Duration).CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
                 {
                     return await Task.FromResult(i);
                 }
@@ -194,11 +201,9 @@ namespace EventGenerator
 
         private async Task<Sprint[]> GetAllSprintsByActivity(Activity activity)
         {
-            
             var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
             var sprints = maraphoneByActivity.Sprints;
             return sprints;
-
         }
     }
 }

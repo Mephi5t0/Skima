@@ -40,6 +40,7 @@ namespace EventGenerator.Models.Repository
         {
             var newActivityFinishedInfo = new ActivityFinishedInfo()
             {
+                Id = info.Id,
                 ActivityId = info.ActivityId,
                 Title = info.Title,
                 Description = info.Description,

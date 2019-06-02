@@ -41,6 +41,7 @@ namespace EventGenerator.Models.Repository
         {
             var subscribeEventInfo = new SubscribeEventInfo()
             {
+                Id = entry.Id,
                 FirstName = entry.FirstName,
                 LastName = entry.LastName,
                 Email = entry.Email,

@@ -40,6 +40,7 @@ namespace EventGenerator.Models.Repository
         {
             var newRegestrationEventInfo = new RegistrationEventInfo()
             {
+                Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
