@@ -101,14 +101,14 @@ namespace EventGenerator
                         IsChecked = false
                     };
                     await subscribeEventInfoRepository.CreateSubscribeEventInfoAsync(subscribeEventInfo);
-
-                    var settingOfEventSubscribe = new SettingsEventOfSubscribeToActivity()
-                    {
-                        CreatedAt = entry.CreatedAt
-                    };
-                    await settingsRepository.CreateSubscribeToActivitySettings(settingOfEventSubscribe);
                 }
             }
+            
+            var settingOfEventSubscribe = new SettingsEventOfSubscribeToActivity()
+            {
+                CreatedAt = DateTime.Now
+            };
+            await settingsRepository.CreateSubscribeToActivitySettings(settingOfEventSubscribe);
         }
 
         public async void GenerateEventOfEndActivityAsync()
@@ -131,13 +131,13 @@ namespace EventGenerator
                         IsChecked = false
                     };
                     await activityFinishedInfoRepository.CreateActivityFinishedInfoAsync(activityFinishedInfo);
-                    var settingOfActivityFinishedInfo = new SettingsEventOfActivity()
-                    {
-                        DateOfLastCheckedActivity = activity.EndAt
-                    };
-                    await settingsRepository.CreateLastActivitySettings(settingOfActivityFinishedInfo);
                 }
             }
+            var settingOfActivityFinishedInfo = new SettingsEventOfActivity()
+            {
+                DateOfLastCheckedActivity = DateTime.Now
+            };
+            await settingsRepository.CreateLastActivitySettings(settingOfActivityFinishedInfo);
         }
 
         public async void GenerateEventOfStartSprintAsync()
@@ -168,12 +168,12 @@ namespace EventGenerator
                     IsChecked = false
                 };
                 await startSprintEventRepository.CreateStartSprintEventInfo(startSprintEventInfo);
-                var settingOfStartSprintInfo = new SettingsEventOfStartSprint()
-                {
-                    DateOfLastCheckedSprint = timeStartOfSprint
-                };
-                await settingsRepository.CreateLastStartSprintSettings(settingOfStartSprintInfo);
             }
+            var settingOfStartSprintInfo = new SettingsEventOfStartSprint()
+            {
+                DateOfLastCheckedSprint = DateTime.Now
+            };
+            await settingsRepository.CreateLastStartSprintSettings(settingOfStartSprintInfo);
         }
 
         private async Task<int> GetNumberOfSprintAsync(Activity activity,
@@ -181,6 +181,7 @@ namespace EventGenerator
         {
             var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
             var sprints = maraphoneByActivity.Sprints;
+            
             if (settingsEventOfStartSprint == null || activity.StartAt.CompareTo(DateTime.Now) > 0 &&
                 activity.StartAt.CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
             {
