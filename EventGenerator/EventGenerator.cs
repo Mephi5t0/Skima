@@ -146,6 +146,11 @@ namespace EventGenerator
             var activities = await activityRepository.GetAsync();
             foreach (var activity in activities)
             {
+                if (activity.EndAt.CompareTo(DateTime.Now) > 0)
+                {
+                    continue;
+                }
+
                 var allSprintsByActivity = await GetAllSprintsByActivity(activity);
                 var numberOfSprint = await GetNumberOfSprintAsync(activity, dateOfLastChecked);
                 if (numberOfSprint == -1)
