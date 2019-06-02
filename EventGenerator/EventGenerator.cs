@@ -161,7 +161,7 @@ namespace EventGenerator
 
                 var timeStartOfSprint = (numberOfSprint == 0)
                     ? activity.StartAt
-                    : GetTimeStartOfSprint(activity,allSprintsByActivity,numberOfSprint);
+                    : GetTimeStartOfSprint(activity, allSprintsByActivity, numberOfSprint);
 
                 var startSprintEventInfo = new StartSprintEventInfo()
                 {
@@ -197,8 +197,8 @@ namespace EventGenerator
 
             for (var i = 1; i < sprints.Length; i++)
             {
-                if (GetTimeStartOfSprint(activity,sprints,i) .CompareTo(DateTime.Now) > 0 &&
-                    GetTimeStartOfSprint(activity,sprints,i)
+                if (GetTimeStartOfSprint(activity, sprints, i).CompareTo(DateTime.Now) > 0 &&
+                    GetTimeStartOfSprint(activity, sprints, i)
                         .CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
                 {
                     return await Task.FromResult(i);
@@ -209,12 +209,12 @@ namespace EventGenerator
         }
 
 
-        private DateTime GetTimeStartOfSprint(Activity activity ,Sprint[] sprints, int numberOfSprint)
+        private DateTime GetTimeStartOfSprint(Activity activity, Sprint[] sprints, int numberOfSprint)
         {
             var timeSpan = TimeSpan.Zero;
             for (var i = 0; i < numberOfSprint; i++)
             {
-                timeSpan.Add(sprints[i].Duration);
+                timeSpan += timeSpan.Add(sprints[i].Duration);
             }
 
             var newDate = activity.StartAt;
