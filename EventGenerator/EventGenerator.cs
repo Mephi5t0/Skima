@@ -103,7 +103,7 @@ namespace EventGenerator
                     await subscribeEventInfoRepository.CreateSubscribeEventInfoAsync(subscribeEventInfo);
                 }
             }
-            
+
             var settingOfEventSubscribe = new SettingsEventOfSubscribeToActivity()
             {
                 CreatedAt = DateTime.Now
@@ -133,6 +133,7 @@ namespace EventGenerator
                     await activityFinishedInfoRepository.CreateActivityFinishedInfoAsync(activityFinishedInfo);
                 }
             }
+
             var settingOfActivityFinishedInfo = new SettingsEventOfActivity()
             {
                 DateOfLastCheckedActivity = DateTime.Now
@@ -160,7 +161,7 @@ namespace EventGenerator
 
                 var timeStartOfSprint = (numberOfSprint == 0)
                     ? activity.StartAt
-                    : activity.StartAt.Add(allSprintsByActivity[numberOfSprint - 1].Duration);
+                    : GetTimeStartOfSprint(activity,allSprintsByActivity,numberOfSprint);
 
                 var startSprintEventInfo = new StartSprintEventInfo()
                 {
@@ -175,6 +176,7 @@ namespace EventGenerator
                 };
                 await startSprintEventRepository.CreateStartSprintEventInfo(startSprintEventInfo);
             }
+
             var settingOfStartSprintInfo = new SettingsEventOfStartSprint()
             {
                 DateOfLastCheckedSprint = DateTime.Now
@@ -185,9 +187,8 @@ namespace EventGenerator
         private async Task<int> GetNumberOfSprintAsync(Activity activity,
             SettingsEventOfStartSprint settingsEventOfStartSprint)
         {
-            var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
-            var sprints = maraphoneByActivity.Sprints;
-            
+            var sprints = await GetAllSprintsByActivity(activity);
+
             if (settingsEventOfStartSprint == null || activity.StartAt.CompareTo(DateTime.Now) > 0 &&
                 activity.StartAt.CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
             {
@@ -196,14 +197,29 @@ namespace EventGenerator
 
             for (var i = 1; i < sprints.Length; i++)
             {
-                if (activity.StartAt.Add(sprints[i - 1].Duration).CompareTo(DateTime.Now) > 0 &&
-                    activity.StartAt.Add(sprints[i - 1].Duration).CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
+                if (GetTimeStartOfSprint(activity,sprints,i) .CompareTo(DateTime.Now) > 0 &&
+                    GetTimeStartOfSprint(activity,sprints,i)
+                        .CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
                 {
                     return await Task.FromResult(i);
                 }
             }
 
             return await Task.FromResult(-1);
+        }
+
+
+        private DateTime GetTimeStartOfSprint(Activity activity ,Sprint[] sprints, int numberOfSprint)
+        {
+            var timeSpan = TimeSpan.Zero;
+            for (var i = 0; i < numberOfSprint; i++)
+            {
+                timeSpan.Add(sprints[i].Duration);
+            }
+
+            var newDate = activity.StartAt;
+
+            return newDate.Add(timeSpan);
         }
 
         private async Task<Sprint[]> GetAllSprintsByActivity(Activity activity)

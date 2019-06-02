@@ -17,7 +17,7 @@ namespace EventGenerator.Models.Repository
             startSprintEventInfo = database.GetCollection<StartSprintEventInfo>("StartSprintEventInfo");
         }
 
-        public Task<List<StartSprintEventInfo>> GetAllSubscribeEventInfo()
+        public Task<List<StartSprintEventInfo>> GetAllStartSprintEventInfo()
         {
             var search = startSprintEventInfo.Find(info => true);
             var result = search.ToList();

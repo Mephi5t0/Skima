@@ -25,7 +25,8 @@ namespace SimpleMailSender
             RegistrationEventInfoRepository registrationEventInfoRepository,
             SubscribeEventInfoRepository subscribeEventInfoRepository,
             ActivityFinishedRepository activityFinishedInfoRepository,
-            StartSprintEventRepository startSprintEventRepository, ContentRepository contentRepository, EntryRepository entryRepository)
+            StartSprintEventRepository startSprintEventRepository, ContentRepository contentRepository,
+            EntryRepository entryRepository)
         {
             this.userRepository = userRepository;
             this.registrationEventInfoRepository = registrationEventInfoRepository;
@@ -61,7 +62,6 @@ namespace SimpleMailSender
 
         public async void NotifyOnRegistration()
         {
-
             var directoryInfo = new DirectoryInfo(Directory.GetCurrentDirectory());
             string messageBody;
             using (var streamReader =
@@ -133,6 +133,7 @@ namespace SimpleMailSender
                                 "Завершение активности", bodyMessage).GetAwaiter();
                         }
                     }
+
                     await activityFinishedInfoRepository.UpdateAsync(info);
                 }
             }
@@ -148,9 +149,9 @@ namespace SimpleMailSender
             {
                 sourceHtml = streamReader.ReadToEnd();
             }
-            
 
-            var sprints = await startSprintEventRepository.GetAllSubscribeEventInfo();
+
+            var sprints = await startSprintEventRepository.GetAllStartSprintEventInfo();
             foreach (var sprint in sprints)
             {
                 if (!sprint.IsChecked)
@@ -161,9 +162,10 @@ namespace SimpleMailSender
                         if (entry.ActivityId == sprint.ActivityId)
                         {
                             var tasks = sprint.Tasks;
+                            var numberOfTask = 0;
                             foreach (var task in tasks)
                             {
-
+                                var themeOfMessage = (numberOfTask == 0) ? "Начало Спринта" : "Задание";
                                 Attachment attachment = null;
                                 var content = contentRepository.GetAsync(task.ContentId).Result;
                                 var messageBody = sourceHtml.Replace("Заголовок задания", task.Title);
@@ -175,7 +177,7 @@ namespace SimpleMailSender
                                     attachment = new Attachment(memoryStream, MediaTypeNames.Application.Octet);
 
                                     SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, attachment,
-                                        "Начало Спринта",
+                                        themeOfMessage,
                                         messageBody
                                     ).GetAwaiter();
                                 }
@@ -184,13 +186,15 @@ namespace SimpleMailSender
                                     messageBody = messageBody.Replace("ОПИСАНИЕ",
                                         Encoding.UTF8.GetString(content.Data));
                                     SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, attachment,
-                                        "Начало Спринта",
+                                        themeOfMessage,
                                         messageBody
                                     ).GetAwaiter();
                                 }
+                                numberOfTask++;
                             }
                         }
                     }
+
                     await startSprintEventRepository.UpdateAsync(sprint);
                 }
             }
