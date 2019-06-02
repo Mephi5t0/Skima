@@ -167,7 +167,7 @@ namespace SimpleMailSender
                                 Attachment attachment = null;
                                 var content = contentRepository.GetAsync(task.ContentId).Result;
                                 var messageBody = sourceHtml.Replace("Заголовок задания", task.Title);
-                                if (content.Type != "text")
+                                if (content.Type != "text/plain")
                                 {
                                     messageBody = messageBody.Replace("ОПИСАНИЕ", "");
                                     var memoryStream = new MemoryStream();

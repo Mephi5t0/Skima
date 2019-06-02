@@ -48,7 +48,7 @@ namespace EventGenerator.Models.Repository
                 Title = entry.Title,
                 Description = entry.Description,
                 CreatedAt = entry.CreatedAt,
-                IsChecked = false
+                IsChecked = true
             };
             
             this.subscribeEventInfo.ReplaceOne(info => info.Id ==entry.Id, subscribeEventInfo);

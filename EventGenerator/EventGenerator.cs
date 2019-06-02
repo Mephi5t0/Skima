@@ -159,6 +159,7 @@ namespace EventGenerator
 
                 var startSprintEventInfo = new StartSprintEventInfo()
                 {
+                    ActivityId = activity.Id,
                     Number = numberOfSprint,
                     StartAt = timeStartOfSprint,
                     Description = allSprintsByActivity[numberOfSprint].Description,
