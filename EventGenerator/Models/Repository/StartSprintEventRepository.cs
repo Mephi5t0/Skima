@@ -40,6 +40,7 @@ namespace EventGenerator.Models.Repository
         {
             var newSprintInfo = new StartSprintEventInfo()
             {
+                Id = sprint.Id,
                 Number = sprint.Number,
                 ActivityId = sprint.ActivityId,
                 StartAt = sprint.StartAt,

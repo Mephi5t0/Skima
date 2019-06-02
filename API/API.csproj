@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Client.Models\Client.Models.csproj" />
+      <ProjectReference Include="..\EventGenerator\EventGenerator.csproj" />
       <ProjectReference Include="..\Models.Converters\Models.Converters.csproj" />
       <ProjectReference Include="..\Models\Models.csproj" />
       <ProjectReference Include="..\SimpleMailSender\SimpleMailSender.csproj" />

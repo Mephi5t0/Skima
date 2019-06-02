@@ -47,11 +47,12 @@ namespace API
             services.AddSingleton<RegistrationEventInfoRepository>();
             services.AddSingleton<StartSprintEventRepository>();
             services.AddSingleton<SubscribeEventInfoRepository>();
+            services.AddSingleton<SettingsRepository>();
             
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
-            services.AddSingleton<SettingsRepository>();
             services.AddSingleton<EventGenerator.EventGenerator>();
+            services.AddSingleton<SettingsRepository>();
             services.AddHostedService<CronWorker>();
             services.AddHostedService<AuthDaemon>();
             services.AddHostedService<ActivityStatusModifier>();
