@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Models;
 using MongoDB.Driver;
 
-namespace EventGenerator.Repository
+namespace EventGenerator.Settings.Repository
 {
     public class SettingsRepository
     {
@@ -29,7 +29,7 @@ namespace EventGenerator.Repository
 
         public Task<SettingsEventOfRegistration> GetLastRegistrationSettings()
         {
-            var lastUpdate = settingsEventOfRegistration.Find(setting => true).SortByDescending(x => x.DateOfLastNotificationUser).First();
+            var lastUpdate = settingsEventOfRegistration.Find(setting => true).SortByDescending(x => x.DateOfLastNotificationUser).FirstOrDefault();
             return Task.FromResult(lastUpdate);
         }
 
@@ -47,7 +47,8 @@ namespace EventGenerator.Repository
         public Task<SettingsEventOfSubscribeToActivity> GetLastSubscribeSettings()
         {
             var lastUpdate = settigsEventOfSubscribeToActivity.Find(settings => true).SortByDescending(x => x.CreatedAt)
-                .First();
+                .FirstOrDefault();
+            
             return Task.FromResult(lastUpdate);
         }
 
@@ -65,7 +66,8 @@ namespace EventGenerator.Repository
         public Task<SettingsEventOfActivity> GetLastActivitySettings()
         {
             var lastUpdate = settingsEventOfActivity.Find(setting => true)
-                .SortByDescending(x => x.DateOfLastCheckedActivity).First();
+                .SortByDescending(x => x.DateOfLastCheckedActivity).FirstOrDefault();
+            
             return Task.FromResult(lastUpdate);
         }
 
@@ -82,7 +84,7 @@ namespace EventGenerator.Repository
 
         public Task<SettingsEventOfStartSprint> GetLastStartSprintSettings()
         {
-            var lastUpdate = settingsEventOfStartSprint.Find(setting => true).SortByDescending(x=>x.DateOfLastCheckedSprint).First();
+            var lastUpdate = settingsEventOfStartSprint.Find(setting => true).SortByDescending(x=>x.DateOfLastCheckedSprint).FirstOrDefault();
             return Task.FromResult(lastUpdate);
         }
 

@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using API.Errors;
-using Client.Models.Maraphone.Task;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models.Converters.Maraphone;
@@ -49,10 +48,13 @@ namespace API.Controllers
                 Id = document.Id
             };
             
-            return Ok(result);
+            return CreatedAtRoute(
+                "GetContent",
+                new { id = result.Id},
+                result);
         }
 
-        [HttpGet]
+        [HttpGet("{id}", Name = "GetContent")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)

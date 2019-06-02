@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EventGenerator.Models;
 using Models;
-using Models.Activity.Repository;
 using MongoDB.Driver;
 
-namespace EventGenerator.Repository
+namespace EventGenerator.Models.Repository
 {
     public class ActivityFinishedRepository
     {

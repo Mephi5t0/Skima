@@ -11,10 +11,7 @@ using Client.Models.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Models.Converters.Users;
 using Models.Tokens.Repository;
-using Models.Users;
-using Models.Users.Repository;
 
 namespace API.Controllers
 {
@@ -71,51 +68,60 @@ namespace API.Controllers
 
             await tokenRepository.RemoveRefreshTokenAsync(refreshToken);
 
-            return Ok("Refresh token removed successfully");
+            return NoContent();
         }
 
         [HttpPatch]
         public async Task<IActionResult> Refresh()
         {
-            var refreshToken = User.FindFirstValue("refreshToken");
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Substring(7);
-            
+
             var principal = authenticator.GetPrincipalFromExpiredToken(token);
-            var userId = principal.Claims.First(claim => claim.Type == "userId").ToString();
-            
+            var userId = principal.Claims.First(claim => claim.Type == "userId").Value;
+            var refreshToken = principal.Claims.First(claim => claim.Type == "refreshToken").Value;
+
             if (userId == null)
             {
                 var error = ServiceErrorResponses.InvalidClaims("userId");
                 return BadRequest(error);
             }
-            
-            var savedRefreshToken = await tokenRepository.GetRefreshTokenAsync(userId);
-            if (savedRefreshToken != refreshToken)
+
+            var refreshTokenExist = await tokenRepository.IsRefreshTokenExistAsync(userId, refreshToken);
+
+            if (!refreshTokenExist)
             {
                 return BadRequest("Invalid refresh token");
             }
 
-            var newJwtToken = GenerateToken(principal.Claims);
             var newRefreshToken = authenticator.GenerateRefreshToken();
+            var claims = new List<Claim>
+            {
+                new Claim("userId", userId),
+                new Claim("refreshToken", newRefreshToken)
+            };
+            var newJwtToken = GenerateToken(claims);
             await tokenRepository.RemoveRefreshTokenAsync(userId, refreshToken);
             await tokenRepository.SaveRefreshTokenAsync(userId, newRefreshToken);
 
             return new ObjectResult(new
             {
-                token = newJwtToken,
-                refreshToken = newRefreshToken
+                token = newJwtToken
             });
         }
 
         private static string GenerateToken(IEnumerable<Claim> claims)
         {
-            var jwt = new JwtSecurityToken(AuthOptions.ISSUER,
-                AuthOptions.AUDIENCE,
-                claims,
-                DateTime.UtcNow,
-                DateTime.UtcNow.AddMinutes(AuthOptions.LIFETIME),
-                new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256)
-            );
+            var now = DateTime.UtcNow;
+            
+            var jwt = new JwtSecurityToken(
+                issuer: AuthOptions.ISSUER,
+                audience: AuthOptions.AUDIENCE,
+                notBefore: now,
+                claims: claims,
+                expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(),
+                    SecurityAlgorithms.HmacSha256));
+            
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }

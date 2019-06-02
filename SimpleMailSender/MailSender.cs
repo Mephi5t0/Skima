@@ -4,7 +4,7 @@ using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using EventGenerator.Repository;
+using EventGenerator.Models.Repository;
 using Models.Entries.Repository;
 using Models.Maraphone.Task.Repository;
 using Models.Users.Repository;

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using API.Auth;
-using EventGenerator.Repository;
 using API.CronWorkers;
+using EventGenerator.Models.Repository;
+using EventGenerator.Settings.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,7 +52,7 @@ namespace API
             services.AddSingleton<Configuration>();
             services.AddSingleton<MailSender>();
             services.AddSingleton<EventGenerator.EventGenerator>();
-            
+            services.AddSingleton<SettingsRepository>();
             services.AddHostedService<CronWorker>();
             services.AddHostedService<AuthDaemon>();
             services.AddHostedService<ActivityStatusModifier>();
@@ -103,7 +104,7 @@ namespace API
             }
 
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-            
+
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();

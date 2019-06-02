@@ -26,7 +26,7 @@ namespace API.Controllers
         }
         
         [AllowAnonymous]
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetMaraphone")]
         public async Task<IActionResult> GetAsync([FromRoute] string id, CancellationToken cancellationToken)
         {
             if (id == null)
@@ -90,7 +90,10 @@ namespace API.Controllers
             var modelMaraphone = await maraphoneRepository.CreateAsync(maraphoneCreationInfo, cancellationToken);
             var clientMaraphone = MaraphoneConverter.Convert(modelMaraphone);
 
-            return Created("https://skima.cf/v1/maraphones", clientMaraphone);
+            return CreatedAtRoute(
+                "GetMaraphone", 
+                new { id = clientMaraphone.Id }, 
+                clientMaraphone);
         }
     }
 }

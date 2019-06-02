@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 
@@ -37,12 +38,12 @@ namespace Models.Tokens.Repository
             return Task.CompletedTask;
         }
 
-        public Task<string> GetRefreshTokenAsync(string userId)
+        public Task<bool> IsRefreshTokenExistAsync(string userId, string refreshToken)
         {
-            var search = tokens.Find(token => token.UserId == userId);
-            var result = search.FirstOrDefault();
-
-            return Task.FromResult(result.RefreshToken);
+            var count = tokens.CountDocuments(token => token.UserId == userId && token.RefreshToken == refreshToken);
+            var result = count > 0;
+            
+            return Task.FromResult(result);
         }
 
         public Task RemoveRefreshTokenAsync(string userId, string refreshToken)

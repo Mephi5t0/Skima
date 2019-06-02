@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client.Models.Maraphone;
 using EventGenerator.Models;
-using EventGenerator.Repository;
+using EventGenerator.Models.Repository;
+using EventGenerator.Settings;
+using EventGenerator.Settings.Repository;
 using Models.Activity;
 using Models.Activity.Repository;
 using Models.Entries.Repository;
@@ -48,11 +50,11 @@ namespace EventGenerator
 
         public async void GenerateEventForUnRegistrationUser()
         {
-            var dateOfLastCheckedRegistrationUser = settingsRepository.GetLastRegistrationSettings();
-            var users = await userRepository.GetAllAsync();
+            var dateOfLastCheckedRegistrationUser = await settingsRepository.GetLastRegistrationSettings();
+            var users =  await userRepository.GetAllAsync();
             foreach (var user in users)
             {
-                if (user.RegisteredAt.CompareTo(dateOfLastCheckedRegistrationUser) > 0)
+                if (user.RegisteredAt.CompareTo(dateOfLastCheckedRegistrationUser.DateOfLastNotificationUser) > 0)
                 {
                     var registrationEventInfo = new RegistrationEventInfo()
                     {
@@ -62,13 +64,13 @@ namespace EventGenerator
                         RegisteredAt = user.RegisteredAt,
                         IsChecked = false
                     };
-                    await registrationEventInfoRepository.CreateRegistrationEventInfoAsync(registrationEventInfo);
+                     await registrationEventInfoRepository.CreateRegistrationEventInfoAsync(registrationEventInfo);
 
                     var settingOfEventsRegistration = new SettingsEventOfRegistration()
                     {
                         DateOfLastNotificationUser = user.RegisteredAt
                     };
-                    await settingsRepository.CreateRegistrationEventSettingsAsync(settingOfEventsRegistration);
+                     await settingsRepository.CreateRegistrationEventSettingsAsync(settingOfEventsRegistration);
                 }
             }
         }
@@ -76,11 +78,11 @@ namespace EventGenerator
 
         public async void GenerateEventOfSubscription()
         {
-            var dateOfLastCheckedEntry = settingsRepository.GetLastSubscribeSettings();
+            var dateOfLastCheckedEntry = await settingsRepository.GetLastSubscribeSettings();
             var entries = await entryRepository.GetAllAsync();
             foreach (var entry in entries)
             {
-                if (entry.CreatedAt.CompareTo(dateOfLastCheckedEntry) > 0)
+                if (entry.CreatedAt.CompareTo(dateOfLastCheckedEntry.CreatedAt) > 0)
                 {
                     var userByEntry = await userRepository.GetByIdAsync(entry.UserId);
                     var activity = await activityRepository.GetByIdAsync(entry.ActivityId);
@@ -108,15 +110,14 @@ namespace EventGenerator
 
         public async void GenerateEventOfEndActivityAsync()
         {
-            var dateOfLastCheckedActivity = settingsRepository.GetLastActivitySettings();
+            var dateOfLastCheckedActivity = await settingsRepository.GetLastActivitySettings();
             var activities = await activityRepository.GetAsync();
             foreach (var activity in activities)
             {
-                if (activity.EndAt.CompareTo(dateOfLastCheckedActivity) > 0 &&
+                if (activity.EndAt.CompareTo(dateOfLastCheckedActivity.DateOfLastCheckedActivity) > 0 &&
                     activity.EndAt.CompareTo(DateTime.Now) > 0)
                 {
-                    var maraphoneByActivity =
-                        await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
+                    var maraphoneByActivity = await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
                     var activityFinishedInfo = new ActivityFinishedInfo()
                     {
                         ActivityId = activity.Id,
