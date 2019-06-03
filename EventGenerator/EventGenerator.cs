@@ -48,7 +48,6 @@ namespace EventGenerator
             this.activityRepository = activityRepository;
         }
 
-
         public async void GenerateEventForUnRegistrationUser()
         {
             var dateOfLastCheckedRegistrationUser = await settingsRepository.GetLastRegistrationSettings();
