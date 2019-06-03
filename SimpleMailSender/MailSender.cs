@@ -130,7 +130,7 @@ namespace SimpleMailSender
                         {
                             var bodyMessage = sourceHtml.Replace("НАЗВАНИЕ МАРАФОНА", info.Title);
                             SendEmailAsync(userRepository.GetByIdAsync(entry.UserId).Result.Email, null,
-                                "Завершение активности", bodyMessage).GetAwaiter();
+                                "Завершение марафона", bodyMessage).GetAwaiter();
                         }
                     }
 
