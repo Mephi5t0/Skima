@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Models;
 using MongoDB.Driver;
@@ -66,7 +67,7 @@ namespace EventGenerator.Settings.Repository
         public Task<SettingsEventOfActivity> GetLastActivitySettings()
         {
             var lastUpdate = settingsEventOfActivity.Find(setting => true)
-                .SortByDescending(x => x.DateOfLastCheckedActivity).FirstOrDefault();
+                .SortByDescending(x => x.DateOfLastCheckedActivity).SortByDescending(x => x.DateOfLastCheckedActivity).FirstOrDefault();
             
             return Task.FromResult(lastUpdate);
         }

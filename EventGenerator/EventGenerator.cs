@@ -48,7 +48,6 @@ namespace EventGenerator
             this.activityRepository = activityRepository;
         }
 
-
         public async void GenerateEventForUnRegistrationUser()
         {
             var dateOfLastCheckedRegistrationUser = await settingsRepository.GetLastRegistrationSettings();
@@ -119,7 +118,7 @@ namespace EventGenerator
             {
                 if (dateOfLastCheckedActivity == null ||
                     activity.EndAt.CompareTo(dateOfLastCheckedActivity.DateOfLastCheckedActivity) > 0 &&
-                    activity.EndAt.CompareTo(DateTime.Now) > 0)
+                    activity.EndAt.CompareTo(DateTime.Now) < 0)
                 {
                     var maraphoneByActivity =
                         await maraphoneRepository.GetAsync(activity.MaraphoneId, CancellationToken.None);
