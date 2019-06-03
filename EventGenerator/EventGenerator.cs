@@ -147,7 +147,7 @@ namespace EventGenerator
             var activities = await activityRepository.GetAsync();
             foreach (var activity in activities)
             {
-                if (activity.EndAt.CompareTo(DateTime.Now) > 0)
+                if (DateTime.Now.CompareTo(activity.EndAt) > 0)
                 {
                     continue;
                 }
