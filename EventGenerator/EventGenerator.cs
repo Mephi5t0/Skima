@@ -117,8 +117,12 @@ namespace EventGenerator
             var activities = await activityRepository.GetAsync();
             foreach (var activity in activities)
             {
-                if (dateOfLastCheckedActivity == null ||
-                    activity.EndAt.CompareTo(dateOfLastCheckedActivity.DateOfLastCheckedActivity) > 0 &&
+                if (dateOfLastCheckedActivity == null)
+                {
+                    break;
+                }
+
+                if (activity.EndAt.CompareTo(dateOfLastCheckedActivity.DateOfLastCheckedActivity) > 0 &&
                     activity.EndAt.CompareTo(DateTime.Now) < 0)
                 {
                     var maraphoneByActivity =
