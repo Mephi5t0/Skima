@@ -147,7 +147,7 @@ namespace EventGenerator
             var activities = await activityRepository.GetAsync();
             foreach (var activity in activities)
             {
-                if (activity.EndAt.CompareTo(DateTime.Now) > 0)
+                if (DateTime.Now.CompareTo(activity.EndAt) > 0)
                 {
                     continue;
                 }
@@ -189,7 +189,7 @@ namespace EventGenerator
         {
             var sprints = await GetAllSprintsByActivity(activity);
 
-            if (settingsEventOfStartSprint == null || activity.StartAt.CompareTo(DateTime.Now) > 0 &&
+            if (settingsEventOfStartSprint == null || activity.StartAt.CompareTo(DateTime.Now) < 0 &&
                 activity.StartAt.CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
             {
                 return await Task.FromResult(0);
@@ -197,7 +197,7 @@ namespace EventGenerator
 
             for (var i = 1; i < sprints.Length; i++)
             {
-                if (GetTimeStartOfSprint(activity, sprints, i).CompareTo(DateTime.Now) > 0 &&
+                if (GetTimeStartOfSprint(activity, sprints, i).CompareTo(DateTime.Now) < 0 &&
                     GetTimeStartOfSprint(activity, sprints, i)
                         .CompareTo(settingsEventOfStartSprint.DateOfLastCheckedSprint) > 0)
                 {
